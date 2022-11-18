@@ -17,5 +17,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     w, h = (640*2, 480*2)
     x, y = getDimensions(app, w, h)
+    x += 200
     game = Game(w, h, x, y)
     sys.exit(app.exec_())

@@ -29,17 +29,13 @@ class Tile(QWidget):
         self.show()
 
     def setPiece(self, piece):
-        del self.piece
-
-        self.piece = Piece(self, piece.pixmap.imagePath, piece.length)
-
-        del piece
+        self.piece = Piece(self, piece.color, piece.piece, piece.length)
 
     def deletePiece(self):
-        self.piece = Piece(self, None, self.piece.length)
+        self.piece = Piece(self, None, None, self.piece.length)
 
     def getPossibleMoves(self):
-        return util.possibleMoves.get(self.piece, None)
+        return util.possibleMoves[self.piece.code](self.x, self.y, self.piece)
 
 # https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def dragEnterEvent(self, e):
@@ -49,13 +45,17 @@ class Tile(QWidget):
         pos = e.pos()
         piece = e.source()
         prevTile = piece.parent
+        displacement = (self.x, self.y)
 
-        slope = util.getSlope(*util.getDisplacement(self, prevTile))
-        if slope not in self.getPossibleMoves():
+        possibleMoves = prevTile.getPossibleMoves()
+        print(possibleMoves)
+        if displacement not in possibleMoves:
             e.ignore()
+            return
 
         if self.piece.color == piece.color:
             e.ignore()
+            return
 
         
             

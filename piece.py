@@ -6,16 +6,23 @@ class Piece(QLabel):
     def __init__(self, parent, color, piece, length):
         self.color = color
         self.piece = piece
+        try:
+            self.code = piece + color
+        except TypeError:
+            self.code = None
 
-        self.imagePath = f"images/Chess_{self.color}{self.piece}t60.png"
+        if color and piece:
+            self.imagePath = f"images/Chess_{self.piece}{self.color}t60.png"
+        else:
+            self.imagePath = None
 
         self.parent = parent
         self.length = length
         super().__init__(parent)
         self.setGeometry(0, 0, length, length)
-        if imagePath:
-            self.pixmap = QPixmap(imagePath).scaledToWidth(length).scaledToHeight(length)
-            self.pixmap.imagePath = imagePath
+        if self.imagePath:
+            self.pixmap = QPixmap(self.imagePath).scaledToWidth(length).scaledToHeight(length)
+            self.pixmap.imagePath = self.imagePath
             self.setPixmap(self.pixmap)
         else:
             self.pixmap = QPixmap(None)

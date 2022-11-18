@@ -12,11 +12,13 @@ class Board(QWidget):
         self.tiles = []
 
         for char in 'abcdefgh':
+            row = []
             for num in '12345678':
                 tile = Tile(self, char, num, tile_length)
-                color, piece = self.getStartingPiece(char, num)
+                piece, color = self.getStartingPiece(char, num)
                 tile.setPiece(Piece(tile, color, piece, tile_length))
-                self.tiles.append(tile)
+                row.append(tile)
+            self.tiles.append(row)
 
         self.show()
 

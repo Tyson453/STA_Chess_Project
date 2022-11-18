@@ -1,3 +1,96 @@
+def checkTile(tiles, x, y, pieceColor, occupied=True, empty=True):
+    if not(0 <= x < 8) and not(0 <= y < 8):
+        return False
+
+    tile = tiles[x][y]
+
+    if not tile.piece.code and empty:
+        return True
+    if tile.piece.code and tile.piece.color != pieceColor and occupied:
+        return True
+    return False
+
+def getBlackPawnMoves(x, y, piece):
+    possibleMoves = []
+    color = piece.color
+    tiles = piece.parent.parent().tiles
+
+    if checkTile(tiles, x, y+1, color, occupied=False):
+        possibleMoves.append((x, y+1))
+
+    if checkTile(tiles, x, y+2, color, occupied=False):
+        if y == 1:
+            possibleMoves.append((x, y+2))
+
+    if checkTile(tiles, x+1, y+1, color, occupied=True, empty=False):
+        possibleMoves.append((x+1, y+1))
+
+    if checkTile(tiles, x-1, y+1, color, occupied=True, empty=False):
+        possibleMoves.append((x-1, y+1))
+
+    return possibleMoves
+
+def getBlackBishopMoves(x, y, piece):
+    possibleMoves = []
+    color = piece.color
+    tiles = piece.parent.parent().tiles
+
+    for dx, dy in [(-1,-1),(-1,1),(1,-1),(1,1)]:
+        for i in range(1,9):
+            dx *= i
+            dy *= i
+
+            nx, ny = x+dx, y+dy
+
+            if not(0 <= nx < 8) or not(0 <= ny < 8):
+                print(nx, ny)
+                print()
+                break
+
+            print(f"({nx}, {ny}) = {checkTile(tiles, nx, ny, color)}")
+            if checkTile(tiles, nx, ny, color):
+                possibleMoves.append((nx, ny))
+
+            if tiles[nx][ny].piece.code:
+                print(f"Failed at ({nx}, {ny})")
+                print()
+                break
+
+            print()
+
+    return possibleMoves
+
+
+def getBlackRookMoves(x, y, piece):
+    pass
+
+def getBlackKnightMoves(x, y, piece):
+    pass
+
+def getBlackKingMoves(x, y, piece):
+    pass
+
+def getBlackQueenMoves(x, y, piece):
+    pass
+
+def getWhitePawnMoves(x, y, piece):
+    pass
+
+def getWhiteBishopMoves(x, y, piece):
+    pass
+
+def getWhiteRookMoves(x, y, piece):
+    pass
+
+def getWhiteKnightMoves(x, y, piece):
+    pass
+
+def getWhiteKingMoves(x, y, piece):
+    pass
+
+def getWhiteQueenMoves(x, y, piece):
+    pass
+
 startingPieces = {
     'a1': 'rd',
     'b1': 'nd',
@@ -38,12 +131,18 @@ startingPieces = {
 }
 
 possibleMoves = {
-    'p': [],
-    'b': [],
-    'r': [],
-    'n': [],
-    'k': [],
-    'q': [],
+    'pd': getBlackPawnMoves,
+    'bd': getBlackBishopMoves,
+    'rd': getBlackRookMoves,
+    'nd': getBlackKnightMoves,
+    'kd': getBlackKingMoves,
+    'qd': getBlackQueenMoves,
+    'pl': getWhitePawnMoves,
+    'bl': getWhiteBishopMoves,
+    'rl': getWhiteRookMoves,
+    'nl': getWhiteKnightMoves,
+    'kl': getWhiteKingMoves,
+    'ql': getWhiteQueenMoves,
 }
 
 def getDisplacement(tile1, tile2):
