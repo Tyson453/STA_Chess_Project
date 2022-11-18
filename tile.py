@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QDrag
 from PyQt5.QtCore import Qt, QMimeData
+
 from piece import Piece
+import util
 
 class Tile(QWidget):
     def __init__(self, parent, letter, number, length):
@@ -36,7 +38,8 @@ class Tile(QWidget):
     def deletePiece(self):
         self.piece = Piece(self, None, self.piece.length)
 
-
+    def getPossibleMoves(self):
+        return util.possibleMoves.get(self.piece, None)
 
 # https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def dragEnterEvent(self, e):
@@ -45,7 +48,16 @@ class Tile(QWidget):
     def dropEvent(self, e):
         pos = e.pos()
         piece = e.source()
+        prevTile = piece.parent
 
-        if not self.piece.pixmap.imagePath:
-            self.setPiece(piece)
-            e.accept()            
+        slope = util.getSlope(*util.getDisplacement(self, prevTile))
+        if slope not in self.getPossibleMoves():
+            e.ignore()
+
+        if self.piece.color == piece.color:
+            e.ignore()
+
+        
+            
+        self.setPiece(piece)
+        e.accept()

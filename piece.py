@@ -3,7 +3,12 @@ from PyQt5.QtGui import QPixmap, QDrag
 from PyQt5.QtCore import Qt, QMimeData
 
 class Piece(QLabel):
-    def __init__(self, parent, imagePath, length):
+    def __init__(self, parent, color, piece, length):
+        self.color = color
+        self.piece = piece
+
+        self.imagePath = f"images/Chess_{self.color}{self.piece}t60.png"
+
         self.parent = parent
         self.length = length
         super().__init__(parent)

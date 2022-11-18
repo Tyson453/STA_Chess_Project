@@ -36,3 +36,18 @@ startingPieces = {
     'g7': 'pl',
     'h7': 'pl',
 }
+
+possibleMoves = {
+    'p': [],
+    'b': [],
+    'r': [],
+    'n': [],
+    'k': [],
+    'q': [],
+}
+
+def getDisplacement(tile1, tile2):
+    return (tile1.x - tile2.x, tile1.y - tile2.y)
+
+def getSlope(dx, dy):
+    pass
