@@ -30,6 +30,24 @@ def getBlackPawnMoves(x, y, piece):
 
     return possibleMoves
 
+def getWhitePawnMoves(x, y, piece):
+    possibleMoves = []
+    color = piece.color
+    tiles = piece.parent.parent().tiles
+
+    if checkTile(tiles, x, y-1, color, occupied=False):
+        possibleMoves.append((x, y-1))
+
+    if checkTile(tiles, x, y-2, color, occupied=False):
+        if y == 6:
+            possibleMoves.append((x, y-2))
+
+    if checkTile(tiles, x+1, y-1, color, occupied=True, empty=False):
+        possibleMoves.append((x+1, y-1))
+
+    if checkTile(tiles, x-1, y-1, color, occupied=True, empty=False):
+        possibleMoves.append((x-1, y-1))
+
 def getBlackBishopMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
@@ -60,32 +78,29 @@ def getBlackBishopMoves(x, y, piece):
 
     return possibleMoves
 
+def getWhiteBishopMoves(x, y, piece):
+    pass
+
 
 def getBlackRookMoves(x, y, piece):
-    pass
-
-def getBlackKnightMoves(x, y, piece):
-    pass
-
-def getBlackKingMoves(x, y, piece):
-    pass
-
-def getBlackQueenMoves(x, y, piece):
-    pass
-
-def getWhitePawnMoves(x, y, piece):
-    pass
-
-def getWhiteBishopMoves(x, y, piece):
     pass
 
 def getWhiteRookMoves(x, y, piece):
     pass
 
+def getBlackKnightMoves(x, y, piece):
+    pass
+
 def getWhiteKnightMoves(x, y, piece):
     pass
 
+def getBlackKingMoves(x, y, piece):
+    pass
+
 def getWhiteKingMoves(x, y, piece):
+    pass
+
+def getBlackQueenMoves(x, y, piece):
     pass
 
 def getWhiteQueenMoves(x, y, piece):
