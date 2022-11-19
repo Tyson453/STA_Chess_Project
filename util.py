@@ -14,7 +14,7 @@ def checkTile(tiles, x, y, pieceColor, occupied=True, empty=True):
 def getBlackPawnMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
-    tiles = piece.parent.parent().tiles
+    tiles = piece.parent().parent().tiles
 
     if checkTile(tiles, x, y+1, color, occupied=False):
         possibleMoves.append((x, y+1))
@@ -35,7 +35,7 @@ def getBlackPawnMoves(x, y, piece):
 def getWhitePawnMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
-    tiles = piece.parent.parent().tiles
+    tiles = piece.parent().parent().tiles
 
     if checkTile(tiles, x, y-1, color, occupied=False):
         possibleMoves.append((x, y-1))
@@ -56,7 +56,7 @@ def getWhitePawnMoves(x, y, piece):
 def getBishopMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
-    tiles = piece.parent.parent().tiles
+    tiles = piece.parent().parent().tiles
 
     for dx, dy in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
         for i in range(1, 9):
@@ -77,7 +77,7 @@ def getBishopMoves(x, y, piece):
 def getRookMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
-    tiles = piece.parent.parent().tiles
+    tiles = piece.parent().parent().tiles
 
     for dx, dy in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
         for i in range(1, 9):
@@ -98,7 +98,7 @@ def getRookMoves(x, y, piece):
 def getKnightMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
-    tiles = piece.parent.parent().tiles
+    tiles = piece.parent().parent().tiles
 
     for dx, dy in [(2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (1, -2), (-1, 2), (-1, -2)]:
         nx, ny = x+dx, y+dy
@@ -112,7 +112,7 @@ def getKnightMoves(x, y, piece):
 def getKingMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
-    tiles = piece.parent.parent().tiles
+    tiles = piece.parent().parent().tiles
 
     for dx, dy in [(1, 1), (1, -1), (-1, 1), (-1, -1), (1, 0), (0, 1), (-1, 0), (0, -1)]:
         nx, ny = x+dx, y+dy
@@ -181,3 +181,9 @@ possibleMoves = {
     'ql': getQueenMoves,
     None: lambda x, y, z: []
 }
+
+
+def rgb2hex(color):
+    r, g, b = color.r, color.g, color.b
+
+    return f"#{r:02x}{g:02x}{b:02x}"

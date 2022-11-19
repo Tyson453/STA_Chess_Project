@@ -2,8 +2,9 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QDrag
 from PyQt5.QtCore import Qt, QMimeData
 
+
 class Piece(QLabel):
-    def __init__(self, parent, color, piece, length):
+    def __init__(self, parent, color, piece):
         self.color = color
         self.piece = piece
         try:
@@ -16,12 +17,12 @@ class Piece(QLabel):
         else:
             self.imagePath = None
 
-        self.parent = parent
-        self.length = length
+        self.length = parent.length
         super().__init__(parent)
-        self.setGeometry(0, 0, length, length)
+        self.setGeometry(0, 0, self.length, self.length)
         if self.imagePath:
-            self.pixmap = QPixmap(self.imagePath).scaledToWidth(length).scaledToHeight(length)
+            self.pixmap = QPixmap(self.imagePath).scaledToWidth(
+                self.length).scaledToHeight(self.length)
             self.pixmap.imagePath = self.imagePath
             self.setPixmap(self.pixmap)
         else:
@@ -33,10 +34,17 @@ class Piece(QLabel):
 
 # https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def mouseMoveEvent(self, e):
-        if e.buttons() == Qt.LeftButton:
-            drag = QDrag(self)
-            mime = QMimeData()
-            drag.setMimeData(mime)
-            x = drag.exec_(Qt.MoveAction)
-            if x == 2:
-                self.parent.deletePiece()
+        if e.buttons() != Qt.LeftButton:
+            return
+
+        if self.parent().parent().parent().currentPlayer.color != self.color:
+            return
+
+        self.parent().displayPossibleMoves()
+
+        drag = QDrag(self)
+        mime = QMimeData()
+        drag.setMimeData(mime)
+        x = drag.exec_(Qt.MoveAction)
+        if x == 2:
+            self.parent().deletePiece()

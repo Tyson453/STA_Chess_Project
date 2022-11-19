@@ -4,6 +4,7 @@ from piece import Piece
 from tile import Tile
 import util
 
+
 class Board(QWidget):
     def __init__(self, parent, width, height, tile_length):
         super().__init__(parent)
@@ -16,7 +17,7 @@ class Board(QWidget):
             for num in '12345678':
                 tile = Tile(self, char, num, tile_length)
                 piece, color = self.getStartingPiece(char, num)
-                tile.setPiece(Piece(tile, color, piece, tile_length))
+                tile.setPiece(Piece(tile, color, piece))
                 row.append(tile)
             self.tiles.append(row)
 
