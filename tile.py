@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QMimeData
 from piece import Piece
 import util
 
+
 class Tile(QWidget):
     def __init__(self, parent, letter, number, length):
         self.piece = None
@@ -12,7 +13,7 @@ class Tile(QWidget):
         self.x = ord(letter) - ord('a')
         self.y = int(number) - 1
 
-        self.color = (self.x%2 + self.y%2) % 2
+        self.color = (self.x % 2 + self.y % 2) % 2
         self.color = '#ffffff' if not self.color else '#74b56c'
 
         super().__init__(parent)
@@ -48,7 +49,6 @@ class Tile(QWidget):
         displacement = (self.x, self.y)
 
         possibleMoves = prevTile.getPossibleMoves()
-        print(possibleMoves)
         if displacement not in possibleMoves:
             e.ignore()
             return
@@ -57,7 +57,5 @@ class Tile(QWidget):
             e.ignore()
             return
 
-        
-            
         self.setPiece(piece)
         e.accept()
