@@ -1,53 +1,51 @@
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QWidget, QPushButton
-from PyQt5.QtCore import Qt, QMimeData
-from PyQt5.QtGui import QDrag
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
 
-class DragButton(QPushButton):
+class TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
 
-    def mouseMoveEvent(self, e):
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            # See below for the nested-list data structure.
+            # .row() indexes into the outer list,
+            # .column() indexes into the sub-list
+            return self._data[index.row()][index.column()]
 
-        if e.buttons() == Qt.LeftButton:
-            drag = QDrag(self)
-            mime = QMimeData()
-            drag.setMimeData(mime)
-            drag.exec_(Qt.MoveAction)
+    def rowCount(self, index):
+        # The length of the outer list.
+        return len(self._data)
+
+    def columnCount(self, index):
+        # The following takes the first sub-list, and returns
+        # the length (only works if all rows are an equal length)
+        return len(self._data[0])
 
 
-class Window(QWidget):
-
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setAcceptDrops(True)
 
-        self.blayout = QHBoxLayout()
-        for l in ['A', 'B', 'C', 'D']:
-            btn = DragButton(l)
-            self.blayout.addWidget(btn)
+        self.table = QtWidgets.QTableView()
 
-        self.setLayout(self.blayout)
+        data = [
+          [4, 9, 2],
+          [1, 0, 0],
+          [3, 5, 0],
+          [3, 3, 2],
+          [7, 8, 9],
+        ]
 
-    def dragEnterEvent(self, e):
-        e.accept()
+        self.model = TableModel(data)
+        self.table.setModel(self.model)
 
-    def dropEvent(self, e):
-        pos = e.pos()
-        widget = e.source()
-
-        for n in range(self.blayout.count()):
-            # Get the widget at each index in turn.
-            w = self.blayout.itemAt(n).widget()
-            if pos.x() < w.x() + w.size().width() // 2:
-                # We didn't drag past this widget.
-                # insert to the left of it.
-                self.blayout.insertWidget(n-1, widget)
-                break
-
-        e.accept()
+        self.setCentralWidget(self.table)
 
 
-app = QApplication([])
-w = Window()
-w.show()
-
+app=QtWidgets.QApplication(sys.argv)
+window=MainWindow()
+window.show()
 app.exec_()

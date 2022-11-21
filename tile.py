@@ -17,8 +17,7 @@ class Tile(QWidget):
         self.piece = None
         self.color = (self.x % 2 + self.y % 2) % 2
         self.color = RGB(
-            255, 255, 255) if not self.color else RGB(80, 120, 60)
-        # self.color = '#ffffff' if not self.color else '#466e32'
+            255, 255, 255) if not self.color else RGB(150, 190, 100)
 
         self.setGeometry(self.x*length, self.y*length, length, length)
         self.setStyleSheet(f"background-color: {util.rgb2hex(self.color)}")
@@ -47,6 +46,12 @@ class Tile(QWidget):
 
     def highlight(self):
         pass
+
+    def getMove(self, piece):
+        piecePrefix = '' if piece.piece == 'p' else piece.piece.upper()
+        move = self.code
+        return piecePrefix + move
+
 
 # https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def dragEnterEvent(self, e):
@@ -78,5 +83,8 @@ class Tile(QWidget):
 
         if capturedPiece:
             player.capture(capturedPiece)
+
+        move = self.getMove(piece)
+        self.parent().parent().registerMove(move)
             
         e.accept()

@@ -10,7 +10,6 @@ def checkTile(tiles, x, y, pieceColor, occupied=True, empty=True):
         return True
     return False
 
-
 def getBlackPawnMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
@@ -30,7 +29,6 @@ def getBlackPawnMoves(x, y, piece):
         possibleMoves.append((x-1, y+1))
 
     return possibleMoves
-
 
 def getWhitePawnMoves(x, y, piece):
     possibleMoves = []
@@ -52,7 +50,6 @@ def getWhitePawnMoves(x, y, piece):
 
     return possibleMoves
 
-
 def getBishopMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
@@ -72,7 +69,6 @@ def getBishopMoves(x, y, piece):
                 break
 
     return possibleMoves
-
 
 def getRookMoves(x, y, piece):
     possibleMoves = []
@@ -94,7 +90,6 @@ def getRookMoves(x, y, piece):
 
     return possibleMoves
 
-
 def getKnightMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
@@ -107,7 +102,6 @@ def getKnightMoves(x, y, piece):
             possibleMoves.append((nx, ny))
 
     return possibleMoves
-
 
 def getKingMoves(x, y, piece):
     possibleMoves = []
@@ -122,10 +116,8 @@ def getKingMoves(x, y, piece):
 
     return possibleMoves
 
-
 def getQueenMoves(x, y, piece):
     return getBishopMoves(x, y, piece) + getRookMoves(x, y, piece)
-
 
 startingPieces = {
     'a1': 'rd',
@@ -182,8 +174,6 @@ possibleMoves = {
     None: lambda x, y, z: []
 }
 
-
 def rgb2hex(color):
     r, g, b = color.r, color.g, color.b
-
     return f"#{r:02x}{g:02x}{b:02x}"
