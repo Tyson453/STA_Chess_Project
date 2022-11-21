@@ -6,8 +6,10 @@ class Player:
         self.color = color
         self.capturedPieces = []
 
-    def move(self):
-        prevBoard = self.game.board.copy()
+    def wins(self):
+        pass
 
-        while prevBoard == self.game.board:
-            pass
+    def capture(self, piece):
+        self.capturedPieces.append(piece)
+
+        self.game.checkGameState()

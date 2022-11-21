@@ -50,16 +50,23 @@ class Tile(QWidget):
 
 # https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def dragEnterEvent(self, e):
-        e.accept()
+        if e.source().color != self.parent().parent().currentPlayer.color:
+            e.ignore()
+        else:
+            e.accept()
 
     def dropEvent(self, e):
+        player = self.parent().parent().currentPlayer
         pos = e.pos()
         piece = e.source()
         prevTile = piece.parent()
-        displacement = (self.x, self.y)
+        newPos = (self.x, self.y)
+
+        if prevTile.color != player.color:
+            e.ignore()
 
         possibleMoves = prevTile.getPossibleMoves()
-        if displacement not in possibleMoves:
+        if newPos not in possibleMoves:
             e.ignore()
             return
 
@@ -67,5 +74,9 @@ class Tile(QWidget):
             e.ignore()
             return
 
-        self.setPiece(piece)
+        capturedPiece = self.setPiece(piece)
+
+        if capturedPiece:
+            player.capture(capturedPiece)
+            
         e.accept()

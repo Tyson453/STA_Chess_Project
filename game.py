@@ -25,17 +25,22 @@ class Game(QMainWindow):
         self.players = [self.player1, self.player2]
         self.currentPlayer = self.player1
 
+        self.turn = 0
+
         self.show()
 
     def getPlayers(self):
         pass
 
-    def play(self):
-        turn = -1
+    def checkGameState(self):
+        for player in self.players:
+            if any([p.piece == 'k' for p in player.capturedPieces]):
+                player.wins()
+                
 
-        while not self.gameIsOver():
-            turn += 1
 
-            self.currentPlayer = self.players[turn]
+    def nextTurn(self):
+        self.turn += 1
+        self.turn %= 2
 
-            self.currentPlayer.move()
+        self.currentPlayer = self.players[self.turn]

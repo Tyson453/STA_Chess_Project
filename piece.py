@@ -47,4 +47,5 @@ class Piece(QLabel):
         drag.setMimeData(mime)
         x = drag.exec_(Qt.MoveAction)
         if x == 2:
+            self.parent().parent().parent().nextTurn()
             self.parent().deletePiece()
