@@ -5,11 +5,13 @@ from PyQt5.QtWidgets import QMainWindow
 from board import Board
 from player import Player
 from sidebar import Sidebar
-
+from highlightManager import HighlightManager
 
 class Game(QMainWindow):
     def __init__(self, w, h, x, y):
         super().__init__()
+
+        self.highlightManager = HighlightManager()
 
         self.x = x
         self.y = y

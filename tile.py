@@ -43,9 +43,9 @@ class Tile(QWidget):
 
         for x, y in moves:
             tile = self.parent().tiles[x][y]
+            HighlightManager.highlight(tile)
+            
 
-    def highlight(self):
-        pass
 
     def getMove(self, piece):
         piecePrefix = '' if piece.piece == 'p' else piece.piece.upper()
