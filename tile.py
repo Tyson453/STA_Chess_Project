@@ -31,6 +31,7 @@ class Tile(QWidget):
         self.show()
 
     def setPiece(self, piece):
+        del self.piece
         self.piece = Piece(self, piece.color, piece.piece)
 
     def deletePiece(self):
@@ -58,6 +59,7 @@ class Tile(QWidget):
 
     def unhighlight(self):
         self.piece.hideHighlight()
+        self.setStyleSheet(f"background-color: {util.rgb2hex(self.color)}")
 
     def getMove(self, piece):
         piecePrefix = '' if piece.piece == 'p' else piece.piece.upper()

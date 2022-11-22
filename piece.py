@@ -20,6 +20,7 @@ class Piece(QLabel):
         self.length = parent.length
         super().__init__(parent)
         self.setGeometry(0, 0, self.length, self.length)
+        self.setAlignment(Qt.AlignCenter)
         if self.imagePath:
             self.pixmap = QPixmap(self.imagePath).scaledToWidth(
                 self.length).scaledToHeight(self.length)
@@ -40,7 +41,7 @@ class Piece(QLabel):
         if self.parent().parent().parent().currentPlayer.color != self.color:
             return
 
-        self.parent().highlightPossibleMoves()
+        # self.parent().highlightPossibleMoves()
 
         drag = QDrag(self)
         mime = QMimeData()
@@ -51,10 +52,21 @@ class Piece(QLabel):
             self.parent().deletePiece()
 
         self.parent().parent().unhighlightAll()
+    
+    def mousePressEvent(self, e):
+        if e.buttons() != Qt.LeftButton:
+            return
+
+        if self.parent().parent().parent().currentPlayer.color != self.color:
+            return
+
+        self.parent().highlightPossibleMoves()
+
+    def mouseReleaseEvent(self, e):
+        self.parent().unhighlightPossibleMoves()
 
     def occupiedHighlight(self):
         self.hideHighlight()
-        print('occupied highlight')
         self.setStyleSheet(
             f"""
             background-color: rgba(255, 255, 255, 0);
@@ -65,7 +77,6 @@ class Piece(QLabel):
 
     def emptyHighlight(self):
         self.hideHighlight()
-        print('empty highlight')
         self.setStyleSheet(
             f"""
             background-color: rgba(170, 170, 170, 170);
