@@ -28,3 +28,8 @@ class Board(QWidget):
         if piece:
             return piece[0], piece[1]
         return (None, None)
+
+    def unhighlightAll(self):
+        for row in self.tiles:
+            for tile in row:
+                tile.unhighlight()

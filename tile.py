@@ -2,11 +2,12 @@ from PyQt5.QtWidgets import QWidget
 
 from color import RGB
 from piece import Piece
-from tileHighlight import HighlightManager
 import util
 
 
 class Tile(QWidget):
+    highlightOffset = RGB(30, 30, 30)
+
     def __init__(self, parent, letter, number, length):
         super().__init__(parent)
 
@@ -16,11 +17,23 @@ class Tile(QWidget):
 
         self.piece = None
         self.color = (self.x % 2 + self.y % 2) % 2
+        # self.color = RGB(
+        #     255, 255, 255) if not self.color else RGB(150, 190, 100)
         self.color = RGB(
-            255, 255, 255) if not self.color else RGB(150, 190, 100)
+            225, 225, 225) if not self.color else RGB(100, 140, 50)
+        self.highlightColor = self.color + self.highlightOffset
 
         self.setGeometry(self.x*length, self.y*length, length, length)
-        self.setStyleSheet(f"background-color: {util.rgb2hex(self.color)}")
+        # if self.x % 2 == 0:
+        #     self.setStyleSheet(
+        #         f"background-color: {util.rgb2hex(self.highlightColor)}")
+        # else:
+        #     self.setStyleSheet(
+        #         f"background-color: {util.rgb2hex(self.color)}"
+        #     )
+        self.setStyleSheet(
+            f"background-color: {util.rgb2hex(self.color)}"
+        )
         self.setAcceptDrops(True)
 
         self.letter = letter
@@ -38,22 +51,33 @@ class Tile(QWidget):
     def getPossibleMoves(self):
         return util.possibleMoves[self.piece.code](self.x, self.y, self.piece)
 
-    def displayPossibleMoves(self):
+    def highlightPossibleMoves(self):
         moves = self.getPossibleMoves()
 
         for x, y in moves:
             tile = self.parent().tiles[x][y]
-            HighlightManager.highlight(tile)
-            
+            tile.highlight()
 
+    def unhighlightPossibleMoves(self):
+        moves = self.getPossibleMoves()
+
+        for x, y in moves:
+            tile = self.parent().tiles[x][y]
+            tile.unhighlight()
+
+    def highlight(self):
+        self.setStyleSheet(
+            f"background-color: {util.rgb2hex(self.highlightColor)}")
+
+    def unhighlight(self):
+        self.setStyleSheet(f"background-color: {util.rgb2hex(self.color)}")
+        print(self.color)
 
     def getMove(self, piece):
         piecePrefix = '' if piece.piece == 'p' else piece.piece.upper()
         move = self.code
         return piecePrefix + move
 
-
-# https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def dragEnterEvent(self, e):
         if e.source().color != self.parent().parent().currentPlayer.color:
             e.ignore()
@@ -86,5 +110,5 @@ class Tile(QWidget):
 
         move = self.getMove(piece)
         self.parent().parent().registerMove(move)
-            
+
         e.accept()

@@ -5,13 +5,11 @@ from PyQt5.QtWidgets import QMainWindow
 from board import Board
 from player import Player
 from sidebar import Sidebar
-from highlightManager import HighlightManager
+
 
 class Game(QMainWindow):
     def __init__(self, w, h, x, y):
         super().__init__()
-
-        self.highlightManager = HighlightManager()
 
         self.x = x
         self.y = y
@@ -40,7 +38,7 @@ class Game(QMainWindow):
         for player in self.players:
             if any([p.piece == 'k' for p in player.capturedPieces]):
                 player.wins()
-                
+
     def registerMove(self, move):
         self.sidebar.moveTable.addMove(move)
 

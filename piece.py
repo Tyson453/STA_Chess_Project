@@ -40,7 +40,7 @@ class Piece(QLabel):
         if self.parent().parent().parent().currentPlayer.color != self.color:
             return
 
-        self.parent().displayPossibleMoves()
+        self.parent().highlightPossibleMoves()
 
         drag = QDrag(self)
         mime = QMimeData()
@@ -49,3 +49,5 @@ class Piece(QLabel):
         if x == 2:
             self.parent().parent().parent().nextTurn()
             self.parent().deletePiece()
+
+        self.parent().parent().unhighlightAll()

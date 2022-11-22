@@ -1,51 +1,42 @@
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtGui import QPainter, QColor, QFont
 from PyQt5.QtCore import Qt
 
 
-class TableModel(QtCore.QAbstractTableModel):
-    def __init__(self, data):
-        super(TableModel, self).__init__()
-        self._data = data
+class Example(QWidget):
 
-    def data(self, index, role):
-        if role == Qt.DisplayRole:
-            # See below for the nested-list data structure.
-            # .row() indexes into the outer list,
-            # .column() indexes into the sub-list
-            return self._data[index.row()][index.column()]
-
-    def rowCount(self, index):
-        # The length of the outer list.
-        return len(self._data)
-
-    def columnCount(self, index):
-        # The following takes the first sub-list, and returns
-        # the length (only works if all rows are an equal length)
-        return len(self._data[0])
-
-
-class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.table = QtWidgets.QTableView()
+        self.initUI()
 
-        data = [
-          [4, 9, 2],
-          [1, 0, 0],
-          [3, 5, 0],
-          [3, 3, 2],
-          [7, 8, 9],
-        ]
+    def initUI(self):
 
-        self.model = TableModel(data)
-        self.table.setModel(self.model)
+        self.text = "Лев Николаевич Толстой\nАнна Каренина"
 
-        self.setCentralWidget(self.table)
+        self.setGeometry(300, 300, 350, 300)
+        self.setWindowTitle('Drawing text')
+        self.show()
+
+    def paintEvent(self, event):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawText(event, qp)
+        qp.end()
+
+    def drawText(self, event, qp):
+        qp.setPen(QColor(168, 34, 3))
+        qp.setFont(QFont('Decorative', 10))
+        qp.drawText(event.rect(), Qt.AlignCenter, self.text)
 
 
-app=QtWidgets.QApplication(sys.argv)
-window=MainWindow()
-window.show()
-app.exec_()
+def main():
+
+    app = QApplication(sys.argv)
+    ex = Example()
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
