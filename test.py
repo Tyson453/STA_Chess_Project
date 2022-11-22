@@ -1,42 +1,49 @@
-import sys
-from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QPainter, QColor, QFont
+# importing the required libraries
+
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
+import sys
 
 
-class Example(QWidget):
-
+class Window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.initUI()
+        # set the title
+        self.setWindowTitle("round label")
 
-    def initUI(self):
+        # setting  the geometry of window
+        self.setGeometry(60, 60, 600, 400)
 
-        self.text = "Лев Николаевич Толстой\nАнна Каренина"
+        # creating a label widget
+        # by default label will display at top left corner
+        self.label_1 = QLabel('round label', self)
 
-        self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('Drawing text')
+        # moving position
+        self.label_1.move(100, 100)
+
+        # making label square in size
+        self.label_1.resize(80, 80)
+
+        # setting up border and radius
+        self.label_1.setStyleSheet(
+            """
+            background-color: #000000;
+            border-radius: 40px;
+            border: 0px solid #000000;
+            """
+        )
+        # show all the widgets
         self.show()
 
-    def paintEvent(self, event):
-        qp = QPainter()
-        qp.begin(self)
-        self.drawText(event, qp)
-        qp.end()
 
-    def drawText(self, event, qp):
-        qp.setPen(QColor(168, 34, 3))
-        qp.setFont(QFont('Decorative', 10))
-        qp.drawText(event.rect(), Qt.AlignCenter, self.text)
+# create pyqt5 app
+App = QApplication(sys.argv)
 
+# create the instance of our Window
+window = Window()
 
-def main():
-
-    app = QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()
+# start the app
+sys.exit(App.exec())

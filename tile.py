@@ -6,8 +6,6 @@ import util
 
 
 class Tile(QWidget):
-    highlightOffset = RGB(30, 30, 30)
-
     def __init__(self, parent, letter, number, length):
         super().__init__(parent)
 
@@ -17,20 +15,10 @@ class Tile(QWidget):
 
         self.piece = None
         self.color = (self.x % 2 + self.y % 2) % 2
-        # self.color = RGB(
-        #     255, 255, 255) if not self.color else RGB(150, 190, 100)
         self.color = RGB(
-            225, 225, 225) if not self.color else RGB(100, 140, 50)
-        self.highlightColor = self.color + self.highlightOffset
+            255, 255, 255) if not self.color else RGB(150, 190, 100)
 
         self.setGeometry(self.x*length, self.y*length, length, length)
-        # if self.x % 2 == 0:
-        #     self.setStyleSheet(
-        #         f"background-color: {util.rgb2hex(self.highlightColor)}")
-        # else:
-        #     self.setStyleSheet(
-        #         f"background-color: {util.rgb2hex(self.color)}"
-        #     )
         self.setStyleSheet(
             f"background-color: {util.rgb2hex(self.color)}"
         )
@@ -66,12 +54,10 @@ class Tile(QWidget):
             tile.unhighlight()
 
     def highlight(self):
-        self.setStyleSheet(
-            f"background-color: {util.rgb2hex(self.highlightColor)}")
+        self.piece.showHighlight(self.piece.code)
 
     def unhighlight(self):
-        self.setStyleSheet(f"background-color: {util.rgb2hex(self.color)}")
-        print(self.color)
+        self.piece.hideHighlight()
 
     def getMove(self, piece):
         piecePrefix = '' if piece.piece == 'p' else piece.piece.upper()

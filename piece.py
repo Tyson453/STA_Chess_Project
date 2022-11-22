@@ -51,3 +51,36 @@ class Piece(QLabel):
             self.parent().deletePiece()
 
         self.parent().parent().unhighlightAll()
+
+    def occupiedHighlight(self):
+        self.hideHighlight()
+        print('occupied highlight')
+        self.setStyleSheet(
+            f"""
+            background-color: rgba(255, 255, 255, 0);
+            border-radius: {self.width()//2}px;
+            border: {self.width()//8}px solid rgba(170, 170, 170, 255);
+            """
+        )
+
+    def emptyHighlight(self):
+        self.hideHighlight()
+        print('empty highlight')
+        self.setStyleSheet(
+            f"""
+            background-color: rgba(170, 170, 170, 170);
+            border-radius: {self.width()//2}px;
+            border: {self.width()//2}px solid rgba(255, 255, 255, 0);
+            """
+        )
+
+    def showHighlight(self, code):
+        if code:
+            self.occupiedHighlight()
+        else:
+            self.emptyHighlight()
+
+        self.show()
+
+    def hideHighlight(self):
+        self.setStyleSheet("")
