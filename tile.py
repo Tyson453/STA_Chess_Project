@@ -12,6 +12,7 @@ class Tile(QWidget):
         self.length = length
         self.x = ord(letter) - ord('a')
         self.y = int(number) - 1
+        self.pos = (self.x, self.y)
 
         self.piece = None
         self.color = (self.x % 2 + self.y % 2) % 2
@@ -31,10 +32,13 @@ class Tile(QWidget):
         self.show()
 
     def setPiece(self, piece):
-        del self.piece
+        self.deletePiece()
         self.piece = Piece(self, piece.color, piece.piece)
 
     def deletePiece(self):
+        if self.piece:
+            self.piece.hide()
+        del self.piece
         self.piece = Piece(self, None, None)
 
     def getPossibleMoves(self):
@@ -46,13 +50,6 @@ class Tile(QWidget):
         for x, y in moves:
             tile = self.parent().tiles[x][y]
             tile.highlight()
-
-    def unhighlightPossibleMoves(self):
-        moves = self.getPossibleMoves()
-
-        for x, y in moves:
-            tile = self.parent().tiles[x][y]
-            tile.unhighlight()
 
     def highlight(self):
         self.piece.showHighlight(self.piece.code)

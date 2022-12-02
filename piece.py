@@ -41,8 +41,6 @@ class Piece(QLabel):
         if self.parent().parent().parent().currentPlayer.color != self.color:
             return
 
-        # self.parent().highlightPossibleMoves()
-
         drag = QDrag(self)
         mime = QMimeData()
         drag.setMimeData(mime)
@@ -52,7 +50,7 @@ class Piece(QLabel):
             self.parent().deletePiece()
 
         self.parent().parent().unhighlightAll()
-    
+
     def mousePressEvent(self, e):
         if e.buttons() != Qt.LeftButton:
             return
@@ -63,7 +61,7 @@ class Piece(QLabel):
         self.parent().highlightPossibleMoves()
 
     def mouseReleaseEvent(self, e):
-        self.parent().unhighlightPossibleMoves()
+        self.parent().parent().unhighlightAll()
 
     def occupiedHighlight(self):
         self.hideHighlight()
@@ -95,3 +93,6 @@ class Piece(QLabel):
 
     def hideHighlight(self):
         self.setStyleSheet("")
+
+    def __repr__(self):
+        return f"{self.code}"
