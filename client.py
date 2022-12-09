@@ -19,7 +19,7 @@ class Client:
         msg_length = len(msg)
 
         send_length = str(msg_length).encode(self.FORMAT)
-        send_length += b' ' * (self.HEADER = len(send_length))
+        send_length += b' ' * (self.HEADER - len(send_length))
 
         self.client.send(send_length)
         self.client.send(msg)
@@ -31,3 +31,14 @@ class Client:
 
     def __repr__(self):
         return f"{self.ADDR[0]}:{self.ADDR[1]}"
+
+if __name__ == '__main__':
+    logger = Logger()
+    server = socket.gethostbyname(socket.gethostname())
+    port = 5050
+    addr = (server, port)
+    discon_msg = "!DISCONNECT"
+    header = 64
+    _format = 'utf-8'
+
+    c = Client(logger, addr, discon_msg, header, _format)

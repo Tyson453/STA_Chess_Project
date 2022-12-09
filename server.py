@@ -5,6 +5,8 @@ from logger import Logger
 
 class Server:
     def __init__(self, logger: Logger, addr: tuple, discon_msg: str, header: int, _format: str):
+        self.SERVER = addr[0]
+        self.PORT = addr[1]
         self.ADDR = addr
         self.DISCONNECT_MSG = discon_msg
         self.HEADER = header
@@ -39,11 +41,11 @@ class Server:
         conn.close()
 
     def start(self):
-        server.listen()
+        self.server.listen()
         self.log(f"Listening on {self.SERVER}")
 
         while True:
-            conn, addr = server.accept()
+            conn, addr = self.server.accept()
             thread = threading.Thread(target=self.handleClient, args=(conn, addr))
             thread.start()
             self.log(f"Active Connections: {threading.activeCount() - 1}")
@@ -53,3 +55,15 @@ class Server:
 
     def __repr__(self):
         return "SERVER"
+
+
+if __name__ == '__main__':
+    logger = Logger()
+    server = socket.gethostbyname(socket.gethostname())
+    port = 5050
+    addr = (server, port)
+    discon_msg = "!DISCONNECT"
+    header = 64
+    _format = 'utf-8'
+
+    s = Server(logger, addr, discon_msg, header, _format)
