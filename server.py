@@ -1,31 +1,28 @@
 import socket
 import threading
 
-# TODO: Add logging
+from logger import Logger
 
 
 class Server:
-    # Bytes
-    HEADER = 64
-    MESSAGE_LENGTH = 0
-    FORMAT = 'utf-8'
-    DISCONNECT_MSG = "!DISCONNECT"
+    def __init__(self, logger: Logger, addr: tuple, discon_msg: str, header: int, _format: str):
+        self.SERVER = addr[0]
+        self.PORT = addr[1]
+        self.ADDR = addr
+        self.DISCONNECT_MSG = discon_msg
+        self.HEADER = header
+        self.FORMAT = _format
 
-    def __init__(self):
-        self.SERVER = socket.gethostbyname(socket.gethostname())
-        self.PORT = 5050
-        self.ADDR = (self.SERVER, self.PORT)
+        self.logger = logger
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
 
-        # Log server start
-        print(f"[SERVER] Starting...")
+        self.log("Starting...")
         self.start()
 
     def handleClient(self, conn, addr):
-        # Log client connected
-        print(f"[SERVER] {addr} Connected")
+        self.log(f"New connection: {addr[0]}:{addr[1]}")
 
         connected = True
         while connected:
@@ -35,40 +32,40 @@ class Server:
 
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(self.FORMAT)
-            # msg = conn.recv(self.MESSAGE_LENGTH).decode(self.FORMAT)
+
             if msg == self.DISCONNECT_MSG:
                 connected = False
-                # Log disconnection
-                print(f"[SERVER] {addr} Disconnected")
 
-            # Log message received
-            print(f"[SERVER] Message \"{msg}\" received from {type(addr)}")
-            self.send(conn, "Message received")
+            self.log(f"Message \"{msg}\" received from {addr[0]}:{addr[1]}")
+            conn.send("Message received".encode(self.FORMAT))
 
         conn.close()
 
-    def send(self, conn, msg):
-        conn.send(msg.encode(self.FORMAT))
-
     def start(self):
         self.server.listen()
-        # Log f"Listening on {SERVER}"
-        print(f"[SERVER] Listening on port {self.SERVER}")
+        self.log(f"Listening on {self.SERVER}")
 
         while True:
             conn, addr = self.server.accept()
             thread = threading.Thread(
-                target=self.handleClient,
-                args=(conn, addr)
-            )
+                target=self.handleClient, args=(conn, addr))
             thread.start()
-            # Log active connections
-            print(
-                f"[SERVER] Active Connections: {threading.active_count() - 1}")
+            self.log(f"Active Connections: {threading.activeCount() - 1}")
+
+    def log(self, msg):
+        self.logger.log(self, msg)
 
     def __repr__(self):
-        return "[SERVER]"
+        return "SERVER"
 
 
 if __name__ == '__main__':
-    s = Server()
+    logger = Logger()
+    server = socket.gethostbyname(socket.gethostname())
+    port = 5050
+    addr = (server, port)
+    discon_msg = "!DISCONNECT"
+    header = 64
+    _format = 'utf-8'
+
+    s = Server(logger, addr, discon_msg, header, _format)

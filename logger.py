@@ -3,4 +3,4 @@ class Logger:
         pass
 
     def log(self, sender, message):
-        pass
+        print(f"[{sender}] {message}")

@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from game import Game
+from window import Window
 
 
 def getDimensions(app, w, h):
@@ -20,5 +20,5 @@ if __name__ == '__main__':
     w, h = (app.primaryScreen().size().width()//2,
             app.primaryScreen().size().height()//2)
     x, y = getDimensions(app, w, h)
-    game = Game(w, h, x, y)
+    window = Window(w, h, x, y)
     sys.exit(app.exec_())
