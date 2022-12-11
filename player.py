@@ -1,9 +1,7 @@
 class Player:
-    def __init__(self, game, name, number, color):
-        self.game = game
-        self.name = name
+    def __init__(self, number, client):
         self.number = number
-        self.color = color
+        self.client = client
         self.capturedPieces = []
 
     def wins(self):
@@ -11,5 +9,3 @@ class Player:
 
     def capture(self, piece):
         self.capturedPieces.append(piece)
-
-        self.game.checkGameState()

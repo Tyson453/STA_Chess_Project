@@ -16,7 +16,7 @@ class Client:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.connect(self.ADDR)
 
-        self.send(self.DISCONNECT_MSG)
+        # self.send(self.DISCONNECT_MSG)
 
     def send(self, msg):
         msg = msg.encode(self.FORMAT)

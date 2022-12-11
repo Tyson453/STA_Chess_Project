@@ -8,7 +8,7 @@ from sidebar import Sidebar
 
 
 class Game(QMainWindow):
-    def __init__(self, w, h, x, y):
+    def __init__(self, w, h, x, y, p1, p2):
         super().__init__()
 
         self.x = x
@@ -19,10 +19,10 @@ class Game(QMainWindow):
         self.setWindowTitle('Chess')
         self.setGeometry(self.x, self.y, self.w, self.h)
 
-        self.player1 = Player(self, 'Tyson', 1, 'l')
-        self.player2 = Player(self, 'Whelan', 2, 'd')
-        self.players = [self.player1, self.player2]
-        self.currentPlayer = self.player1
+        self.p1 = p1
+        self.p2 = p2
+        self.players = [self.p1, self.p2]
+        self.currentPlayer = self.p1
 
         self.board = Board(self, self.w, self.h, self.h//8)
         self.sidebar = Sidebar(self, self.w-self.h, self.h, self.h)

@@ -20,7 +20,7 @@ class Server:
         self.code = self.encodeAddress(self.ADDR)
 
         self.logger = Logger()
-        self.maxConnections = 1
+        self.maxConnections = 2
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
