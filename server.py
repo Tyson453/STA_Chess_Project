@@ -87,11 +87,11 @@ class Server:
         code = int(str(ip) + (str(port) if port !=
                    Constants.DEFAULT_PORT else ''))
 
-        # Convert code into base 32 to reduce the code to 6 digits
+        # Convert code into base 36 to reduce the code to 6 digits
         digits = []
         while code:
-            digits.append(digs[code % 32])
-            code //= 32
+            digits.append(digs[code % Constants.JOIN_CODE_BASE])
+            code //= Constants.JOIN_CODE_BASE
 
         code = ''.join(digits[::-1])
 

@@ -39,8 +39,8 @@ class Client:
     def decodeAddress(self, code):
         # Check if the code includes the port
         withPort = len(code) > 6
-        # Decode from base 32 to decimal
-        code = int(code, 32)
+        # Decode from base 36 to decimal
+        code = int(code, Constants.JOIN_CODE_BASE)
 
         # Get the port and ip address
         if withPort:
