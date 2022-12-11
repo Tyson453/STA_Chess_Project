@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 import random
+import string
+from client import Client
 
 from server import Server
 
@@ -39,7 +41,7 @@ class Window(QtWidgets.QMainWindow):
             }
         """
 
-        self.createGameButton = QtWidgets.QPushButton(
+        self.createGameButton: QtWidgets.QPushButton = QtWidgets.QPushButton(
             "Create Game", self.menuScreen)
         self.createGameButton.setGeometry(
             self.width()//2 - bw//2, self.height()//5, bw, bh)
@@ -85,28 +87,44 @@ class Window(QtWidgets.QMainWindow):
 
         self.joinGameScreen.setGeometry(0, 0, self.width(), self.height())
 
+        font = QtGui.QFont("serif", 34, -1, False)
+        w, h = self.width()*3//8, self.height()//4
+
+        self.codeEntry = QtWidgets.QLineEdit(self.joinGameScreen)
+        self.codeEntry.setGeometry(
+            self.width()//2, self.height()//2 - h//2, w, h)
+        self.codeEntry.setFont(font)
+        # self.codeEntry.setAlignment(QtCore.Qt.AlignLeft)
+        # self.codeEntry.setAttribute(QtCore.Qt.WA_StyledBackground)
+        self.codeEntry.setStyleSheet(
+            "border-color: #666666;border-width: 4px;")
+        self.codeEntry.returnPressed.connect(self.createClient)
+
+        self.codeEntryLabel = QtWidgets.QLabel(
+            "Game code: ", self.joinGameScreen)
+        self.codeEntryLabel.setGeometry(
+            self.width()//4 - self.width()//8, self.height()//2 - h//2, w, h)
+        self.codeEntryLabel.setFont(font)
+        # self.codeEntryLabel.setAlignment(QtCore.Qt.AlignRight)
+
         self.joinGameScreen.hide()
 
     def createGame(self):
         self.menuScreen.hide()
         self.createGameScreen.show()
 
-        code = self.generateCode()
-        code = '000000'
-        self.codeLabel.setText("Game Code: " + code)
-
         # Start server
-        self.gameServer = Server(code)
+        self.gameServer = Server()
         self.gameServer.start()
+
+        code = self.gameServer.code
+        self.codeLabel.setText("Game Code: " + code)
 
     def joinGame(self):
         self.menuScreen.hide()
         self.joinGameScreen.show()
-        print("Joining Game")
 
-    def generateCode(self):
-        chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+    def createClient(self):
+        code = self.codeEntry.displayText()
 
-        code = random.choices(chars, k=6)
-
-        return ''.join(code)
+        self.client = Client(code)
