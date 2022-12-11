@@ -2,6 +2,8 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 import random
 
+from server import Server
+
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self, w, h, x, y):
@@ -16,8 +18,7 @@ class Window(QtWidgets.QMainWindow):
         self.initCreateGameScreen()
         self.initJoinGameScreen()
 
-        # self.menuScreen.show()
-        self.createGameScreen.show()
+        self.menuScreen.show()
 
         self.show()
 
@@ -27,7 +28,7 @@ class Window(QtWidgets.QMainWindow):
         self.menuScreen.setAttribute(QtCore.Qt.WA_StyleSheet)
         self.menuScreen.setGeometry(0, 0, self.width(), self.height())
 
-        bw, bh = self.width()//2, self.height()//5
+        bw, bh = self.width()//2 + 50, self.height()//5
         bFont = QtGui.QFont("serif", 48, -1, False)
         bStyleSheet = """
             QPushButton::hover {
@@ -41,7 +42,7 @@ class Window(QtWidgets.QMainWindow):
         self.createGameButton = QtWidgets.QPushButton(
             "Create Game", self.menuScreen)
         self.createGameButton.setGeometry(
-            self.width()//4, self.height()//5, bw, bh)
+            self.width()//2 - bw//2, self.height()//5, bw, bh)
         self.createGameButton.setAttribute(QtCore.Qt.WA_StyledBackground)
         self.createGameButton.setStyleSheet(bStyleSheet)
         self.createGameButton.setFont(bFont)
@@ -51,33 +52,30 @@ class Window(QtWidgets.QMainWindow):
         self.joinGameButton = QtWidgets.QPushButton(
             "Join Game", self.menuScreen)
         self.joinGameButton.setGeometry(
-            self.width()//4, self.height()*3//5, bw, bh)
+            self.width()//2 - bw//2, self.height()*3//5, bw, bh)
         self.joinGameButton.setAttribute(QtCore.Qt.WA_StyledBackground)
         self.joinGameButton.setStyleSheet(bStyleSheet)
         self.joinGameButton.setFont(bFont)
 
         self.joinGameButton.clicked.connect(self.joinGame)
 
-        lw, lh = 300, 100
-
-        # self.codeLabel = QtWidgets.QLabel("Test", self.menuScreen)
-        # self.codeLabel.setGeometry(self.width()//2 - lw//2, self.height()//2 - lh//2, lw, lh)
-        # self.codeLabel.setAttribute(QtCore.Qt.WA_StyledBackground)
-        # self.codeLabel.setStyleSheet("background-color: white")
-        # self.codeLabel.show()
-
         self.menuScreen.hide()
 
     def initCreateGameScreen(self):
         self.createGameScreen = QtWidgets.QWidget(self)
 
-        lw, lh = 300, 100
+        self.createGameScreen.setGeometry(0, 0, self.width(), self.height())
+        # self.createGameScreen.setAttribute(QtCore.Qt.WA_StyledBackground)
+
+        labelFont = QtGui.QFont("serif", 36, -1, False)
+        lw, lh = 500, 100
 
         self.codeLabel = QtWidgets.QLabel("Test", self.createGameScreen)
         self.codeLabel.setGeometry(
             self.width()//2 - lw//2, self.height()//2 - lh//2, lw, lh)
         self.codeLabel.setAttribute(QtCore.Qt.WA_StyledBackground)
-        self.codeLabel.setStyleSheet("background-color: white")
+        self.codeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.codeLabel.setFont(labelFont)
         self.codeLabel.show()
 
         self.createGameScreen.hide()
@@ -85,15 +83,21 @@ class Window(QtWidgets.QMainWindow):
     def initJoinGameScreen(self):
         self.joinGameScreen = QtWidgets.QWidget(self)
 
+        self.joinGameScreen.setGeometry(0, 0, self.width(), self.height())
+
         self.joinGameScreen.hide()
 
     def createGame(self):
         self.menuScreen.hide()
         self.createGameScreen.show()
+
         code = self.generateCode()
+        code = '000000'
         self.codeLabel.setText("Game Code: " + code)
-        self.codeLabel.show()
-        print(self.codeLabel.pos())
+
+        # Start server
+        self.gameServer = Server(code)
+        self.gameServer.start()
 
     def joinGame(self):
         self.menuScreen.hide()

@@ -1,19 +1,25 @@
 import socket
 
 from logger import Logger
+import Constants
 
 
 class Client:
-    def __init__(self, logger: Logger, addr: tuple, discon_msg: str, header: int, _format: str):
-        self.ADDR = addr
-        self.DISCONNECT_MSG = discon_msg
-        self.HEADER = header
-        self.FORMAT = _format
-
-        self.logger = logger
+    def __init__(self):
+        self.SERVER = Constants.SERVER
+        self.PORT = Constants.PORT
+        self.ADDR = Constants.ADDR
+        self.DISCONNECT_MSG = Constants.DISCONNECT_MSG
+        self.HEADER = Constants.HEADER
+        self.FORMAT = Constants.FORMAT
 
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.connect(self.ADDR)
+
+        self.send('000000')
+        input('')
+
+        self.send(self.DISCONNECT_MSG)
 
     def send(self, msg):
         msg = msg.encode(self.FORMAT)
@@ -25,22 +31,15 @@ class Client:
         self.client.send(send_length)
         self.client.send(msg)
 
-        self.log(f"Message \"{msg}\" sent")
+        response = self.client.recv(2048).decode(self.FORMAT)
 
-    def log(self, msg):
-        self.logger.log(self, msg)
+    # def log(self, msg):
+    #     self.logger.log(self, msg)
 
     def __repr__(self):
-        return f"{self.ADDR[0]}:{self.ADDR[1]}"
+        return f"{self.ADDR[0]}"
+        # return f"{self.ADDR[0]}:{self.ADDR[1]}"
 
 
 if __name__ == '__main__':
-    logger = Logger()
-    server = socket.gethostbyname(socket.gethostname())
-    port = 5050
-    addr = (server, port)
-    discon_msg = "!DISCONNECT"
-    header = 64
-    _format = 'utf-8'
-
-    c = Client(logger, addr, discon_msg, header, _format)
+    c = Client()
