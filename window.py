@@ -15,8 +15,8 @@ class Window(QtWidgets.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_StyledBackground)
         self.setStyleSheet("background-color: #777777")
 
+        # Create and show the menu screen
         self.initMenuScreen()
-
         self.menuScreen.show()
 
         self.show()
@@ -27,6 +27,7 @@ class Window(QtWidgets.QMainWindow):
         self.menuScreen.setAttribute(QtCore.Qt.WA_StyleSheet)
         self.menuScreen.setGeometry(0, 0, self.width(), self.height())
 
+        # Variables for the "Create Game" and "Join Game" buttons
         bw, bh = self.width()//2 + 50, self.height()//5
         bFont = QtGui.QFont("serif", 48, -1, False)
         bStyleSheet = """
@@ -38,6 +39,7 @@ class Window(QtWidgets.QMainWindow):
             }
         """
 
+        # Create the "Create Game" button
         self.createGameButton: QtWidgets.QPushButton = QtWidgets.QPushButton(
             "Create Game", self.menuScreen)
         self.createGameButton.setGeometry(
@@ -46,8 +48,10 @@ class Window(QtWidgets.QMainWindow):
         self.createGameButton.setStyleSheet(bStyleSheet)
         self.createGameButton.setFont(bFont)
 
+        # Run self.initCreateGameScreen when self.createGameButton is clicked
         self.createGameButton.clicked.connect(self.initCreateGameScreen)
 
+        # Create the "Join Game" button
         self.joinGameButton = QtWidgets.QPushButton(
             "Join Game", self.menuScreen)
         self.joinGameButton.setGeometry(
@@ -56,19 +60,18 @@ class Window(QtWidgets.QMainWindow):
         self.joinGameButton.setStyleSheet(bStyleSheet)
         self.joinGameButton.setFont(bFont)
 
+        # Run self.initJoinGameScreen when self.joinGameButton is clicked
         self.joinGameButton.clicked.connect(self.initJoinGameScreen)
-
-        self.menuScreen.hide()
 
     def initCreateGameScreen(self):
         self.createGameScreen = QtWidgets.QWidget(self)
 
         self.createGameScreen.setGeometry(0, 0, self.width(), self.height())
-        # self.createGameScreen.setAttribute(QtCore.Qt.WA_StyledBackground)
 
         labelFont = QtGui.QFont("serif", 36, -1, False)
         lw, lh = 500, 100
 
+        # Label that will display the Join code
         self.codeLabel = QtWidgets.QLabel("Test", self.createGameScreen)
         self.codeLabel.setGeometry(
             self.width()//2 - lw//2, self.height()//2 - lh//2, lw, lh)
@@ -89,14 +92,15 @@ class Window(QtWidgets.QMainWindow):
         font = QtGui.QFont("serif", 34, -1, False)
         w, h = self.width()*3//8, self.height()//4
 
+        # Text entry for entering the Join code
         self.codeEntry = QtWidgets.QLineEdit(self.joinGameScreen)
         self.codeEntry.setGeometry(
             self.width()//2, self.height()//2 - h//2, w, h)
         self.codeEntry.setFont(font)
-        # self.codeEntry.setAlignment(QtCore.Qt.AlignLeft)
-        # self.codeEntry.setAttribute(QtCore.Qt.WA_StyledBackground)
         self.codeEntry.setStyleSheet(
             "border-color: #666666;border-width: 4px;")
+
+        # When the user presses enter, call self.createClient
         self.codeEntry.returnPressed.connect(self.createClient)
 
         self.codeEntryLabel = QtWidgets.QLabel(
@@ -104,11 +108,11 @@ class Window(QtWidgets.QMainWindow):
         self.codeEntryLabel.setGeometry(
             self.width()//4 - self.width()//8, self.height()//2 - h//2, w, h)
         self.codeEntryLabel.setFont(font)
-        # self.codeEntryLabel.setAlignment(QtCore.Qt.AlignRight)
 
         self.joinGame()
 
     def createGame(self):
+        # Change screens
         self.menuScreen.hide()
         self.createGameScreen.show()
 
@@ -116,18 +120,25 @@ class Window(QtWidgets.QMainWindow):
         self.gameServer = Server()
         self.gameServer.start()
 
+        # Get and display the join code
         code = self.gameServer.code
         self.codeLabel.setText("Game Code: " + code)
 
+        # Create client for player 1
         self.createClient(code=code, num=1)
 
     def joinGame(self):
+        # Change screens
         self.menuScreen.hide()
         self.joinGameScreen.show()
 
+        # Client will be created when the join code is entered into self.codeEntry
+
     def createClient(self, code=None, num=2):
+        # Get the code if one is not provided
         if not code:
             code = self.codeEntry.displayText()
 
+        # Create client and player
         self.client = Client(code)
         self.player = Player(num, self.client)

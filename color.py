@@ -1,5 +1,7 @@
 from PyQt5.QtGui import QColor
 
+# Class for handling RGB colors
+
 
 class RGB(QColor):
     def __init__(self, r, g, b):

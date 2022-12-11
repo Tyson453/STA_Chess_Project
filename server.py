@@ -10,6 +10,7 @@ digs = string.digits + string.ascii_letters
 
 class Server:
     def __init__(self):
+        # Constants
         self.SERVER = Constants.SERVER
         self.PORT = Constants.DEFAULT_PORT
         self.ADDR = Constants.ADDR
@@ -17,11 +18,13 @@ class Server:
         self.HEADER = Constants.HEADER
         self.FORMAT = Constants.FORMAT
 
-        self.code = self.encodeAddress(self.ADDR)
-
         self.logger = Logger()
         self.maxConnections = 2
 
+        # Encode the address which will be used for the join code
+        self.code = self.encodeAddress(self.ADDR)
+
+        # Create the server and bind it to the address
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
 
@@ -30,20 +33,26 @@ class Server:
 
         connected = True
         while connected:
+            # Receive the header from the client
             msg_length = conn.recv(self.HEADER).decode(self.FORMAT)
+            # If msg_length is empty, skip the next steps
             if not msg_length:
                 continue
 
+            # Receive the message from the client
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(self.FORMAT)
 
+            # Disconnect if the client sends the disconnect message
             if msg == self.DISCONNECT_MSG:
                 connected = False
                 break
 
+            # Log the message and send the response
             self.logger.log(f"{addr[0]}:{addr[1]}", f'"{msg}"')
             conn.send("!RECEIVED".encode(self.FORMAT))
 
+        # If the client disconnects, close the connection
         conn.close()
         self.log(f"{addr[0]} disconnected")
 
@@ -52,13 +61,17 @@ class Server:
         self.server.listen()
         self.log(f"Listening on {self.SERVER}:{self.PORT}")
 
+        # Create a new thread that handles any incoming connections
         self.thread = threading.Thread(
             target=self.handleConnections)
         self.thread.start()
 
     def handleConnections(self):
+        # While the server is running and max connections hasn't been reached
         while True and threading.active_count() - 2 < self.maxConnections:
+            # Accept the incoming client
             conn, addr = self.server.accept()
+            # Create a thread that will handle the messages between the server and new client
             thread = threading.Thread(
                 target=self.handleClient, args=(conn, addr))
             thread.start()
@@ -91,14 +104,14 @@ class Server:
         return "SERVER"
 
 
-if __name__ == '__main__':
-    logger = Logger()
-    server = socket.gethostbyname(socket.gethostname())
-    port = 5050
-    addr = (server, port)
-    discon_msg = "!DISCONNECT"
-    header = 64
-    _format = 'utf-8'
+# if __name__ == '__main__':
+#     logger = Logger()
+#     server = socket.gethostbyname(socket.gethostname())
+#     port = 5050
+#     addr = (server, port)
+#     discon_msg = "!DISCONNECT"
+#     header = 64
+#     _format = 'utf-8'
 
-    s = Server('')
-    s.start()
+#     s = Server('')
+#     s.start()
