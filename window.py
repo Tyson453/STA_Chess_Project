@@ -67,7 +67,7 @@ class Window(QtWidgets.QMainWindow):
         self.createGameScreen.setGeometry(0, 0, self.width(), self.height())
 
         labelFont = QtGui.QFont("serif", 36, -1, False)
-        lw, lh = 500, 100
+        lw, lh = 600, 100
 
         # Label that will display the Join code
         self.codeLabel = QtWidgets.QLabel("Test", self.createGameScreen)

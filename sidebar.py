@@ -6,7 +6,6 @@ from moveTable import MoveTable
 
 class Sidebar(QWidget):
     def __init__(self, parent, w, h, x):
-        print(parent)
         super().__init__(parent)
 
         self.x = x
@@ -16,7 +15,6 @@ class Sidebar(QWidget):
 
         self.setGeometry(self.x, self.y, self.w, self.h)
 
-        print(self.parent())
         self.createPlayerLabel()
         self.createMoveTable()
 

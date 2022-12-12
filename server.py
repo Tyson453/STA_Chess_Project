@@ -5,12 +5,15 @@ from game import Game
 
 from logger import Logger
 import Constants
+from player import Player
 
 digs = string.digits + string.ascii_letters
 
 
 class Server:
     def __init__(self, window):
+        self.window = window
+
         # Constants
         self.SERVER = Constants.SERVER
         self.PORT = Constants.DEFAULT_PORT
@@ -20,7 +23,6 @@ class Server:
         self.FORMAT = Constants.FORMAT
 
         self.logger = Logger()
-        self.game = Game(window, window.width(), window.height(), 0, 0, self)
         self.maxConnections = 1
         self.players = []
 
@@ -74,14 +76,14 @@ class Server:
         while True and threading.active_count() - 2 < self.maxConnections:
             # Accept the incoming client
             conn, addr = self.server.accept()
-            self.players.append(conn)
+            self.players.append(Player(len(self.players)+1, conn))
             # Create a thread that will handle the messages between the server and new client
             thread = threading.Thread(
                 target=self.handleClient, args=(conn, addr), daemon=True)
             thread.start()
 
         self.log(f"Max connections ({self.maxConnections}) reached")
-        self.game.start()
+        self.game = Game(self.window, self.window.width(), self.window.height(), 0, 0, self)
 
     def encodeAddress(self, addr):
         # Convert ip address to decimal
@@ -101,7 +103,7 @@ class Server:
 
         code = ''.join(digits[::-1])
 
-        return f"{code:06s}".upper()
+        return f"{code:0>7s}".upper()
 
     def log(self, msg):
         self.logger.log(self, msg)
