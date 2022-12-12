@@ -1,7 +1,7 @@
 class Player:
-    def __init__(self, number, client):
+    def __init__(self, number, connection):
         self.number = number
-        self.client = client
+        self.client = connection
         self.capturedPieces = []
 
     def wins(self):

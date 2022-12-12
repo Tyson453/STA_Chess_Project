@@ -1,38 +1,27 @@
-from ctypes import wstring_at
-import sys
-
-from PyQt5.QtWidgets import QMainWindow
-from board import Board
-from player import Player
+from PyQt5 import QtWidgets
 from sidebar import Sidebar
 
 
-class Game(QMainWindow):
-    def __init__(self, w, h, x, y, p1, p2):
-        super().__init__()
+class Game(QtWidgets.QWidget):
+    def __init__(self, parent, w, h, x, y, server):
+        super().__init__(parent)
 
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
+        self.setGeometry(x, y, w, h)
 
-        self.setWindowTitle('Chess')
-        self.setGeometry(self.x, self.y, self.w, self.h)
+        self.server = server
 
-        self.p1 = p1
-        self.p2 = p2
-        self.players = [self.p1, self.p2]
-        self.currentPlayer = self.p1
+        self.hide()
 
-        self.board = Board(self, self.w, self.h, self.h//8)
-        self.sidebar = Sidebar(self, self.w-self.h, self.h, self.h)
-
-        self.turn = 0
-
+    def start(self):
         self.show()
 
-    def getPlayers(self):
-        pass
+        self.players = self.server.players
+        self.currentPlayer = self.players[0]
+
+        self.sidebar = Sidebar(
+            self, self.width()-self.height(), self.height(), self.height())
+
+        self.turn = 0
 
     def checkGameState(self):
         for player in self.players:

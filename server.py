@@ -1,6 +1,7 @@
 import socket
 import string
 import threading
+from game import Game
 
 from logger import Logger
 import Constants
@@ -9,7 +10,7 @@ digs = string.digits + string.ascii_letters
 
 
 class Server:
-    def __init__(self):
+    def __init__(self, window):
         # Constants
         self.SERVER = Constants.SERVER
         self.PORT = Constants.DEFAULT_PORT
@@ -19,7 +20,9 @@ class Server:
         self.FORMAT = Constants.FORMAT
 
         self.logger = Logger()
-        self.maxConnections = 2
+        self.game = Game(window, window.width(), window.height(), 0, 0, self)
+        self.maxConnections = 1
+        self.players = []
 
         # Encode the address which will be used for the join code
         self.code = self.encodeAddress(self.ADDR)
@@ -63,7 +66,7 @@ class Server:
 
         # Create a new thread that handles any incoming connections
         self.thread = threading.Thread(
-            target=self.handleConnections)
+            target=self.handleConnections, daemon=True)
         self.thread.start()
 
     def handleConnections(self):
@@ -71,11 +74,14 @@ class Server:
         while True and threading.active_count() - 2 < self.maxConnections:
             # Accept the incoming client
             conn, addr = self.server.accept()
+            self.players.append(conn)
             # Create a thread that will handle the messages between the server and new client
             thread = threading.Thread(
-                target=self.handleClient, args=(conn, addr))
+                target=self.handleClient, args=(conn, addr), daemon=True)
             thread.start()
+
         self.log(f"Max connections ({self.maxConnections}) reached")
+        self.game.start()
 
     def encodeAddress(self, addr):
         # Convert ip address to decimal

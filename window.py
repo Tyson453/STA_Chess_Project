@@ -1,8 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 
-
 from client import Client
-from player import Player
 from server import Server
 
 
@@ -117,7 +115,7 @@ class Window(QtWidgets.QMainWindow):
         self.createGameScreen.show()
 
         # Start server
-        self.gameServer = Server()
+        self.gameServer = Server(self)
         self.gameServer.start()
 
         # Get and display the join code
@@ -141,4 +139,4 @@ class Window(QtWidgets.QMainWindow):
 
         # Create client and player
         self.client = Client(code)
-        self.player = Player(num, self.client)
+        # self.player = Player(num, self.client)

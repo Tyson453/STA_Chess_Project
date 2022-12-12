@@ -1,24 +1,24 @@
-from PyQt5.QtWidgets import QWidget
-
+from PyQt5 import QtWidgets
 from piece import Piece
 from tile import Tile
+
 import util
 
 
-class Board(QWidget):
-    def __init__(self, parent, width, height, tile_length):
+class Board(QtWidgets.QWidget):
+    def __init__(self, parent, w, h, tileLength):
         super().__init__(parent)
-        self.setGeometry(0, 0, width, height)
+        self.setGeometry(0, 0, w, h)
 
         self.tiles = []
 
         for char in 'abcdefgh':
             row = []
             for num in '12345678':
-                tile = Tile(self, char, num, tile_length)
+                tile = Tile(self, char, num, tileLength)
                 piece, color = self.getStartingPiece(char, num)
                 tile.setPiece(Piece(tile, color, piece))
-                row.append(tile)
+                # row.append(tile)
             self.tiles.append(row)
 
         self.show()
