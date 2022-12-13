@@ -38,7 +38,7 @@ class Piece(QLabel):
         if e.buttons() != Qt.LeftButton:
             return
 
-        if self.parent().parent().parent().currentPlayer.color != self.color:
+        if self.parent().parent().parent().player.color != self.color:
             return
 
         drag = QDrag(self)
@@ -46,7 +46,6 @@ class Piece(QLabel):
         drag.setMimeData(mime)
         x = drag.exec_(Qt.MoveAction)
         if x == 2:
-            self.parent().parent().parent().nextTurn()
             self.parent().deletePiece()
 
         self.parent().parent().unhighlightAll()
@@ -55,7 +54,8 @@ class Piece(QLabel):
         if e.buttons() != Qt.LeftButton:
             return
 
-        if self.parent().parent().parent().currentPlayer.color != self.color:
+        # TODO: Fix this
+        if self.parent().parent().parent().player.color != self.color:
             return
 
         self.parent().highlightPossibleMoves()

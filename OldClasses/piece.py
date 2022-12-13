@@ -38,7 +38,7 @@ class Piece(QLabel):
         if e.buttons() != Qt.LeftButton:
             return
 
-        if self.parent().parent().parent().currentPlayer.color != self.color:
+        if self.parent().parent().parent().player.color != self.color:
             return
 
         drag = QDrag(self)
@@ -55,7 +55,7 @@ class Piece(QLabel):
         if e.buttons() != Qt.LeftButton:
             return
 
-        if self.parent().parent().parent().currentPlayer.color != self.color:
+        if self.parent().parent().parent().player.color != self.color:
             return
 
         self.parent().highlightPossibleMoves()

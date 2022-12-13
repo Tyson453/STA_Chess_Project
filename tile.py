@@ -6,12 +6,12 @@ import util
 
 
 class Tile(QWidget):
-    def __init__(self, parent, letter, number, length):
+    def __init__(self, parent, letter, number, x, y, length):
         super().__init__(parent)
 
         self.length = length
-        self.x = ord(letter) - ord('a')
-        self.y = int(number) - 1
+        self.x = x
+        self.y = y
         self.pos = (self.x, self.y)
 
         self.piece = None
@@ -64,14 +64,13 @@ class Tile(QWidget):
         return piecePrefix + move
 
     def dragEnterEvent(self, e):
-        if e.source().color != self.parent().parent().currentPlayer.color:
+        if e.source().color != self.parent().parent().player.color:
             e.ignore()
         else:
             e.accept()
 
     def dropEvent(self, e):
-        player = self.parent().parent().currentPlayer
-        pos = e.pos()
+        player = self.parent().parent().player
         piece = e.source()
         prevTile = piece.parent()
         newPos = (self.x, self.y)

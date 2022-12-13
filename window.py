@@ -1,12 +1,14 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 from client import Client
+from game import Game
 from server import Server
 
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self, w, h, x, y):
         super().__init__()
+        self.activeScreens = []
 
         self.setWindowTitle('Chess')
         self.setGeometry(x, y, w, h)
@@ -21,6 +23,7 @@ class Window(QtWidgets.QMainWindow):
 
     def initMenuScreen(self):
         self.menuScreen = QtWidgets.QWidget(self)
+        self.activeScreens.append(self.menuScreen)
 
         self.menuScreen.setAttribute(QtCore.Qt.WA_StyleSheet)
         self.menuScreen.setGeometry(0, 0, self.width(), self.height())
@@ -63,6 +66,7 @@ class Window(QtWidgets.QMainWindow):
 
     def initCreateGameScreen(self):
         self.createGameScreen = QtWidgets.QWidget(self)
+        self.activeScreens.append(self.createGameScreen)
 
         self.createGameScreen.setGeometry(0, 0, self.width(), self.height())
 
@@ -84,6 +88,7 @@ class Window(QtWidgets.QMainWindow):
         self.client = None
 
         self.joinGameScreen = QtWidgets.QWidget(self)
+        self.activeScreens.append(self.joinGameScreen)
 
         self.joinGameScreen.setGeometry(0, 0, self.width(), self.height())
 
@@ -99,7 +104,8 @@ class Window(QtWidgets.QMainWindow):
             "border-color: #666666;border-width: 4px;")
 
         # When the user presses enter, call self.createClient
-        self.codeEntry.returnPressed.connect(self.createClient)
+        # self.codeEntry.returnPressed.connect(self.createClient)
+        self.codeEntry.returnPressed.connect(self.joinGame)
 
         self.codeEntryLabel = QtWidgets.QLabel(
             "Game code: ", self.joinGameScreen)
@@ -107,7 +113,7 @@ class Window(QtWidgets.QMainWindow):
             self.width()//4 - self.width()//8, self.height()//2 - h//2, w, h)
         self.codeEntryLabel.setFont(font)
 
-        self.joinGame()
+        self.joinGameScreen.show()
 
     def createGame(self):
         # Change screens
@@ -117,6 +123,10 @@ class Window(QtWidgets.QMainWindow):
         # Start server
         self.gameServer = Server(self)
         self.gameServer.start()
+        self.game = Game(self, self.width(), self.height(), 0, 0)
+
+        # Connect server playerNumberReachedSignal to onPlayerNumberReached Slot
+        self.gameServer.playerNumberReachedSignal.connect(self.onPlayerNumberReached)
 
         # Get and display the join code
         code = self.gameServer.code
@@ -126,13 +136,21 @@ class Window(QtWidgets.QMainWindow):
         self.createClient(code=code, num=1)
 
     def joinGame(self):
+        self.createClient(num=2)
+
         # Change screens
         self.menuScreen.hide()
         self.joinGameScreen.show()
 
+        self.game = Game(self, self.width(), self.height(), 0, 0)
+        for screen in self.activeScreens:
+            screen.hide()
+
+        self.game.start(self.client, True)
         # Client will be created when the join code is entered into self.codeEntry
 
     def createClient(self, code=None, num=2):
+        self.num = num
         # Get the code if one is not provided
         if not code:
             code = self.codeEntry.displayText()
@@ -140,3 +158,12 @@ class Window(QtWidgets.QMainWindow):
         # Create client and player
         self.client = Client(code)
         # self.player = Player(num, self.client)
+
+    @QtCore.pyqtSlot(bool)
+    def onPlayerNumberReached(self, value):
+        if value:
+            self.game.start(self.gameServer.players[self.num-1], self.num)
+            for screen in self.activeScreens:
+                screen.hide()
+        else:
+            self.game.stop()

@@ -1,8 +1,10 @@
+from PyQt5 import QtCore
+
 import socket
 import string
 import threading
-from game import Game
 
+from game import Game
 from logger import Logger
 import Constants
 from player import Player
@@ -10,8 +12,11 @@ from player import Player
 digs = string.digits + string.ascii_letters
 
 
-class Server:
+class Server(QtCore.QObject):
+    playerNumberReachedSignal = QtCore.pyqtSignal(bool)
+
     def __init__(self, window):
+        super().__init__()
         self.window = window
 
         # Constants
@@ -60,6 +65,7 @@ class Server:
         # If the client disconnects, close the connection
         conn.close()
         self.log(f"{addr[0]} disconnected")
+        self.playerNumberReachedSignal.emit(False)
 
     def start(self):
         self.log("Starting...")
@@ -76,14 +82,14 @@ class Server:
         while True and threading.active_count() - 2 < self.maxConnections:
             # Accept the incoming client
             conn, addr = self.server.accept()
-            self.players.append(Player(len(self.players)+1, conn))
+            self.players.append(Player(len(self.players)+1, conn, addr))
             # Create a thread that will handle the messages between the server and new client
             thread = threading.Thread(
                 target=self.handleClient, args=(conn, addr), daemon=True)
             thread.start()
 
         self.log(f"Max connections ({self.maxConnections}) reached")
-        self.game = Game(self.window, self.window.width(), self.window.height(), 0, 0, self)
+        self.playerNumberReachedSignal.emit(True)
 
     def encodeAddress(self, addr):
         # Convert ip address to decimal

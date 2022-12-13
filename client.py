@@ -6,21 +6,26 @@ import Constants
 
 
 class Client:
-    def __init__(self, code):
-        # Constants
-        self.ADDR = self.decodeAddress(code)
-        self.SERVER, self.PORT = self.ADDR
-        self.DISCONNECT_MSG = Constants.DISCONNECT_MSG
-        self.HEADER = Constants.HEADER
-        self.FORMAT = Constants.FORMAT
+    DISCONNECT_MSG = Constants.DISCONNECT_MSG
+    HEADER = Constants.HEADER
+    FORMAT = Constants.FORMAT
 
-        # Conect to the server
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(self.ADDR)
+    def __init__(self, code: str = None, client: socket.socket = None, addr: tuple = None):
+        if code:
+            self.ADDR = self.decodeAddress(code)
+            self.SERVER, self.PORT = self.ADDR
 
-        # self.send(self.DISCONNECT_MSG)
+            self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.client.connect(self.ADDR)
+
+        elif client and addr:
+            self.ADDR = addr
+            self.SERVER, self.PORT = self.ADDR
+
+            self.client = client
 
     def send(self, msg):
+        print(msg)
         # Encode the message
         msg = msg.encode(self.FORMAT)
 

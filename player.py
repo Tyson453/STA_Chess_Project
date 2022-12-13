@@ -1,8 +1,12 @@
+from client import Client
+
+
 class Player:
-    def __init__(self, number, connection):
+    def __init__(self, number, connection, addr):
         self.number = number
-        self.client = connection
+        self.client = Client(client=connection, addr=addr)
         self.capturedPieces = []
+        self.color = 'l' if number == 1 else 'd'
 
     def wins(self):
         pass
