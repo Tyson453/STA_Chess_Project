@@ -63,7 +63,17 @@ class Server(QtCore.QObject):
 
             # Log the message and send the response
             self.logger.log(f"{addr[0]}:{addr[1]}", f'"{msg}"')
-            conn.send("!RECEIVED".encode(self.FORMAT))
+            receiverIdx = 0 if self.connections.index(conn) == 1 else 1
+            receiver = self.connections[receiverIdx]
+
+            msg = msg.encode(self.FORMAT)
+
+            send_length = str(len(msg)).encode(self.FORMAT)
+            send_length += b' ' * (self.HEADER - len(send_length))
+
+            receiver.send(send_length)
+            receiver.send(msg)
+            # conn.send("!RECEIVED".encode(self.FORMAT))
 
         # If the client disconnects, close the connection
         conn.close()

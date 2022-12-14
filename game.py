@@ -35,11 +35,11 @@ class Game(QtWidgets.QWidget):
         self.sidebar.moveTable.addMove(move)
 
         if not received:
-            msg = f"!MOVE({start}, {end}, {move})"
+            msg = f"!MOVE('{start}', '{end}', '{move}')"
 
             self.player.client.send(msg)
 
-            self.nextTurn()
+        self.nextTurn()
 
     def nextTurn(self):
         self.turn += 1
@@ -51,8 +51,16 @@ class Game(QtWidgets.QWidget):
         del self
 
     @QtCore.pyqtSlot(str)
-    def messageSlot(self, value):
+    def moveReceivedSlot(self, value):
+        print(value)
         prefix, args = self.decodeMessage(value)
 
-        if prefix == "!MOVE":
-            self.registerMove(*args, received=True)
+        self.registerMove(*args, received=True)
+
+    def decodeMessage(self, value):
+        openParen = value.index('(')
+        closeParen = value.index(')')
+        prefix = value[:openParen]
+        args = eval(value[openParen+1:closeParen])
+
+        return prefix, args

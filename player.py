@@ -7,6 +7,8 @@ class Player:
         self.client = client
         self.capturedPieces = []
         self.color = 'l' if number == 1 else 'd'
+        if number == 2:
+            self.client.receive()
 
     def wins(self):
         pass

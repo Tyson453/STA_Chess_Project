@@ -125,7 +125,7 @@ class Window(QtWidgets.QMainWindow):
         self.gameServer = Server(self)
         self.gameServer.start()
         self.game = Game(self, self.width(), self.height(), 0, 0)
-        self.gameServer.messageSignal.connect(self.game.messageSlot)
+        # self.gameServer.messageSignal.connect(self.game.messageSlot)
 
         # Connect server playerNumberReachedSignal to onPlayerNumberReached Slot
         self.gameServer.playerNumberReachedSignal.connect(
@@ -139,16 +139,17 @@ class Window(QtWidgets.QMainWindow):
         self.createClient(code=code, num=1)
 
     def joinGame(self):
-        self.createClient(num=2)
 
         # Change screens
         self.menuScreen.hide()
         self.joinGameScreen.show()
 
         self.game = Game(self, self.width(), self.height(), 0, 0)
+
         for screen in self.activeScreens:
             screen.hide()
 
+        self.createClient(num=2)
         self.game.start(Player(self.client, self.num))
         # Client will be created when the join code is entered into self.codeEntry
 
@@ -158,9 +159,9 @@ class Window(QtWidgets.QMainWindow):
         if not code:
             code = self.codeEntry.displayText()
 
-        # Create client and player
+        # Create client
         self.client = Client(code)
-        # self.player = Player(num, self.client)
+        self.client.moveReceivedSignal.connect(self.game.moveReceivedSlot)
 
     @QtCore.pyqtSlot(bool)
     def onPlayerNumberReached(self, value):

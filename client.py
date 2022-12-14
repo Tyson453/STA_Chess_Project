@@ -1,3 +1,6 @@
+import threading
+from PyQt5 import QtCore
+
 import math
 import socket
 
@@ -5,12 +8,16 @@ from logger import Logger
 import Constants
 
 
-class Client:
+class Client(QtCore.QObject):
+    moveReceivedSignal = QtCore.pyqtSignal(str)
+
     DISCONNECT_MSG = Constants.DISCONNECT_MSG
     HEADER = Constants.HEADER
     FORMAT = Constants.FORMAT
 
     def __init__(self, code: str = None, client: socket.socket = None, addr: tuple = None):
+        super().__init__()
+        
         if code:
             self.ADDR = self.decodeAddress(code)
             self.SERVER, self.PORT = self.ADDR
@@ -40,6 +47,34 @@ class Client:
         # Get the response from the server
         response = self.client.recv(2048)
 
+    def receive(self):
+        self.thread = threading.Thread(target=self.receiveMove, daemon=True)
+        self.thread.start()
+        print('receiveMove thread started')
+
+    def receiveMove(self):
+        print('receiveMove thread started 1')
+
+        while True:
+            msg_length = self.client.recv(self.HEADER).decode(self.FORMAT)
+
+            if not msg_length:
+                return
+
+            msg_length = int(msg_length)
+            msg = self.client.recv(msg_length).decode(self.FORMAT)
+            print(msg)
+
+            if "!MOVE" not in msg:
+                continue
+
+            self.moveReceivedSignal.emit(msg)
+            
+            break
+
+        print('receiveMove thread started 1')
+
+
     def decodeAddress(self, code):
         # Check if the code includes the port
         withPort = len(code) > 7
@@ -66,6 +101,14 @@ class Client:
         ip = '.'.join(octets[::-1])
 
         return (ip, port)
+
+    def decodeMessage(self, value):
+        openParen = value.index('(')
+        closeParen = value.index(')')
+        prefix = value[:openParen]
+        args = eval(value[openParen:closeParen])
+
+        return prefix, args
 
     def __repr__(self):
         return f"{self.ADDR[0]}"
