@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 from client import Client
 from game import Game
+from player import Player
 from server import Server
 
 
@@ -126,7 +127,8 @@ class Window(QtWidgets.QMainWindow):
         self.game = Game(self, self.width(), self.height(), 0, 0)
 
         # Connect server playerNumberReachedSignal to onPlayerNumberReached Slot
-        self.gameServer.playerNumberReachedSignal.connect(self.onPlayerNumberReached)
+        self.gameServer.playerNumberReachedSignal.connect(
+            self.onPlayerNumberReached)
 
         # Get and display the join code
         code = self.gameServer.code
@@ -146,7 +148,7 @@ class Window(QtWidgets.QMainWindow):
         for screen in self.activeScreens:
             screen.hide()
 
-        self.game.start(self.client, True)
+        self.game.start(Player(self.client, self.num))
         # Client will be created when the join code is entered into self.codeEntry
 
     def createClient(self, code=None, num=2):
@@ -162,7 +164,7 @@ class Window(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(bool)
     def onPlayerNumberReached(self, value):
         if value:
-            self.game.start(self.gameServer.players[self.num-1], self.num)
+            self.game.start(Player(self.client, self.num))
             for screen in self.activeScreens:
                 screen.hide()
         else:

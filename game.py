@@ -15,13 +15,15 @@ class Game(QtWidgets.QWidget):
 
         self.hide()
 
-    def start(self, player, number):
+    def start(self, player):
         self.player = player
 
         self.turn = 0
 
-        self.sidebar = Sidebar(self, self.width()-self.height(), self.height(), self.height())
-        self.board = Board(self, self.width(), self.height(), self.height()//8, flipped=(True if number == 2 else False))
+        self.sidebar = Sidebar(
+            self, self.width()-self.height(), self.height(), self.height())
+        self.board = Board(self, self.width(), self.height(
+        ), self.height()//8, flipped=(True if self.player.number == 2 else False))
 
         self.show()
 
@@ -34,8 +36,7 @@ class Game(QtWidgets.QWidget):
 
         msg = f"p{self.player.number}: {move}"
 
-        # print(self.player.client)
-        self.player.client.send(move)
+        self.player.client.send(msg)
 
         self.nextTurn()
 

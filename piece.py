@@ -38,7 +38,8 @@ class Piece(QLabel):
         if e.buttons() != Qt.LeftButton:
             return
 
-        if self.parent().parent().parent().player.color != self.color:
+        game = self.parent().parent().parent()
+        if game.player.color != self.color or game.turn != game.player.number-1:
             return
 
         drag = QDrag(self)
@@ -54,8 +55,8 @@ class Piece(QLabel):
         if e.buttons() != Qt.LeftButton:
             return
 
-        # TODO: Fix this
-        if self.parent().parent().parent().player.color != self.color:
+        game = self.parent().parent().parent()
+        if game.player.color != self.color or game.turn != game.player.number-1:
             return
 
         self.parent().highlightPossibleMoves()

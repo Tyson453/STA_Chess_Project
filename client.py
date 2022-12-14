@@ -25,7 +25,6 @@ class Client:
             self.client = client
 
     def send(self, msg):
-        print(msg)
         # Encode the message
         msg = msg.encode(self.FORMAT)
 
@@ -39,7 +38,7 @@ class Client:
         self.client.send(msg)
 
         # Get the response from the server
-        response = self.client.recv(2048).decode(self.FORMAT)
+        response = self.client.recv(2048)
 
     def decodeAddress(self, code):
         # Check if the code includes the port

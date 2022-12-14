@@ -12,6 +12,7 @@ class Sidebar(QtWidgets.QWidget):
         self.y = 0
         self.w = w
         self.h = h
+        print(h)
 
         self.setGeometry(self.x, self.y, self.w, self.h)
         self.setAttribute(QtCore.Qt.WA_StyledBackground)

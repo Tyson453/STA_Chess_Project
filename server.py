@@ -29,7 +29,7 @@ class Server(QtCore.QObject):
 
         self.logger = Logger()
         self.maxConnections = 1
-        self.players = []
+        # self.players = []
 
         # Encode the address which will be used for the join code
         self.code = self.encodeAddress(self.ADDR)
@@ -82,7 +82,7 @@ class Server(QtCore.QObject):
         while True and threading.active_count() - 2 < self.maxConnections:
             # Accept the incoming client
             conn, addr = self.server.accept()
-            self.players.append(Player(len(self.players)+1, conn, addr))
+            # self.players.append(Player(len(self.players)+1, conn, addr))
             # Create a thread that will handle the messages between the server and new client
             thread = threading.Thread(
                 target=self.handleClient, args=(conn, addr), daemon=True)
