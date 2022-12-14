@@ -125,6 +125,7 @@ class Window(QtWidgets.QMainWindow):
         self.gameServer = Server(self)
         self.gameServer.start()
         self.game = Game(self, self.width(), self.height(), 0, 0)
+        self.gameServer.messageSignal.connect(self.game.messageSlot)
 
         # Connect server playerNumberReachedSignal to onPlayerNumberReached Slot
         self.gameServer.playerNumberReachedSignal.connect(

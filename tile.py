@@ -92,7 +92,9 @@ class Tile(QWidget):
         if capturedPiece:
             player.capture(capturedPiece)
 
+        start = prevTile.code
+        end = self.code
         move = self.getMove(piece)
-        self.parent().parent().registerMove(move)
+        self.parent().parent().registerMove(start, end, move)
 
         e.accept()

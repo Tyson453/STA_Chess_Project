@@ -14,6 +14,7 @@ digs = string.digits + string.ascii_letters
 
 class Server(QtCore.QObject):
     playerNumberReachedSignal = QtCore.pyqtSignal(bool)
+    messageSignal = QtCore.pyqtSignal(str)
 
     def __init__(self, window):
         super().__init__()
@@ -28,8 +29,8 @@ class Server(QtCore.QObject):
         self.FORMAT = Constants.FORMAT
 
         self.logger = Logger()
-        self.maxConnections = 1
-        # self.players = []
+        self.maxConnections = 2
+        self.connections = []
 
         # Encode the address which will be used for the join code
         self.code = self.encodeAddress(self.ADDR)
@@ -43,6 +44,8 @@ class Server(QtCore.QObject):
 
         connected = True
         while connected:
+            # TODO: Create protocol for sending moves from server to client and vise versa
+
             # Receive the header from the client
             msg_length = conn.recv(self.HEADER).decode(self.FORMAT)
             # If msg_length is empty, skip the next steps
@@ -82,7 +85,7 @@ class Server(QtCore.QObject):
         while True and threading.active_count() - 2 < self.maxConnections:
             # Accept the incoming client
             conn, addr = self.server.accept()
-            # self.players.append(Player(len(self.players)+1, conn, addr))
+            self.connections.append(conn)
             # Create a thread that will handle the messages between the server and new client
             thread = threading.Thread(
                 target=self.handleClient, args=(conn, addr), daemon=True)
@@ -111,21 +114,18 @@ class Server(QtCore.QObject):
 
         return f"{code:0>7s}".upper()
 
+    def decodeMessage(self, msg):
+        openParenIndex = msg.index('(')
+        closeParenIndex = msg.index(')')
+        prefix = msg[:openParenIndex]
+        args = msg[openParenIndex+1:closeParenIndex]
+
+        args = [str(item) for item in args.split(',')]
+
+        return prefix, args
+
     def log(self, msg):
         self.logger.log(self, msg)
 
     def __repr__(self):
         return "SERVER"
-
-
-# if __name__ == '__main__':
-#     logger = Logger()
-#     server = socket.gethostbyname(socket.gethostname())
-#     port = 5050
-#     addr = (server, port)
-#     discon_msg = "!DISCONNECT"
-#     header = 64
-#     _format = 'utf-8'
-
-#     s = Server('')
-#     s.start()

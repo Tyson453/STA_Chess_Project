@@ -31,14 +31,15 @@ class Game(QtWidgets.QWidget):
         if any([p.piece == 'k' for p in self.player.capturedPieces]):
             self.player.wins()
 
-    def registerMove(self, move):
+    def registerMove(self, start, end, move, received=False):
         self.sidebar.moveTable.addMove(move)
 
-        msg = f"p{self.player.number}: {move}"
+        if not received:
+            msg = f"!MOVE({start}, {end}, {move})"
 
-        self.player.client.send(msg)
+            self.player.client.send(msg)
 
-        self.nextTurn()
+            self.nextTurn()
 
     def nextTurn(self):
         self.turn += 1
@@ -48,3 +49,10 @@ class Game(QtWidgets.QWidget):
 
     def stop(self):
         del self
+
+    @QtCore.pyqtSlot(str)
+    def messageSlot(self, value):
+        prefix, args = self.decodeMessage(value)
+
+        if prefix == "!MOVE":
+            self.registerMove(*args, received=True)

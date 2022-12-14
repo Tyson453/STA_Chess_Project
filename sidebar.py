@@ -12,7 +12,6 @@ class Sidebar(QtWidgets.QWidget):
         self.y = 0
         self.w = w
         self.h = h
-        print(h)
 
         self.setGeometry(self.x, self.y, self.w, self.h)
         self.setAttribute(QtCore.Qt.WA_StyledBackground)
@@ -25,16 +24,15 @@ class Sidebar(QtWidgets.QWidget):
 
     def update(self):
         self.playerLabel.setText(
-            f"Player {self.parent().player.number}")
+            f"Player {self.parent().turn+1}")
 
     def createPlayerLabel(self):
         self.playerLabel = QtWidgets.QLabel(self)
-        self.playerLabel.setGeometry(10, 10, self.w - 20, self.h - 450)
+        self.playerLabel.setGeometry(10, 10, self.w - 20, self.h//5)
         self.playerLabel.setAlignment(Qt.AlignCenter)
         self.playerLabel.setStyleSheet(
             "font-size: 36pt; border: 4px solid black;")
-        self.playerLabel.setText(
-            f"Fix this")
+        self.update()
 
         self.playerLabel.show()
 
