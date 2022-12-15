@@ -33,7 +33,6 @@ class Piece(QLabel):
 
         self.show()
 
-# https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
     def mouseMoveEvent(self, e):
         if e.buttons() != Qt.LeftButton:
             return

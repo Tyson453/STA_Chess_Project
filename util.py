@@ -10,27 +10,8 @@ def checkTile(tiles, x, y, pieceColor, occupied=True, empty=True):
         return True
     return False
 
-def getBlackPawnMoves(x, y, piece):
-    possibleMoves = []
-    color = piece.color
-    tiles = piece.parent().parent().tiles
 
-    if checkTile(tiles, x, y+1, color, occupied=False):
-        possibleMoves.append((x, y+1))
-
-    if checkTile(tiles, x, y+2, color, occupied=False):
-        if y == 1:
-            possibleMoves.append((x, y+2))
-
-    if checkTile(tiles, x+1, y+1, color, occupied=True, empty=False):
-        possibleMoves.append((x+1, y+1))
-
-    if checkTile(tiles, x-1, y+1, color, occupied=True, empty=False):
-        possibleMoves.append((x-1, y+1))
-
-    return possibleMoves
-
-def getWhitePawnMoves(x, y, piece):
+def getPawnMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
     tiles = piece.parent().parent().tiles
@@ -49,6 +30,7 @@ def getWhitePawnMoves(x, y, piece):
         possibleMoves.append((x-1, y-1))
 
     return possibleMoves
+
 
 def getBishopMoves(x, y, piece):
     possibleMoves = []
@@ -70,6 +52,7 @@ def getBishopMoves(x, y, piece):
 
     return possibleMoves
 
+
 def getRookMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
@@ -90,6 +73,7 @@ def getRookMoves(x, y, piece):
 
     return possibleMoves
 
+
 def getKnightMoves(x, y, piece):
     possibleMoves = []
     color = piece.color
@@ -102,6 +86,7 @@ def getKnightMoves(x, y, piece):
             possibleMoves.append((nx, ny))
 
     return possibleMoves
+
 
 def getKingMoves(x, y, piece):
     possibleMoves = []
@@ -116,8 +101,10 @@ def getKingMoves(x, y, piece):
 
     return possibleMoves
 
+
 def getQueenMoves(x, y, piece):
     return getBishopMoves(x, y, piece) + getRookMoves(x, y, piece)
+
 
 startingPieces = {
     'a1': 'rd',
@@ -159,13 +146,13 @@ startingPieces = {
 }
 
 possibleMoves = {
-    'pd': getBlackPawnMoves,
+    'pd': getPawnMoves,
     'bd': getBishopMoves,
     'rd': getRookMoves,
     'nd': getKnightMoves,
     'kd': getKingMoves,
     'qd': getQueenMoves,
-    'pl': getWhitePawnMoves,
+    'pl': getPawnMoves,
     'bl': getBishopMoves,
     'rl': getRookMoves,
     'nl': getKnightMoves,
@@ -173,6 +160,7 @@ possibleMoves = {
     'ql': getQueenMoves,
     None: lambda x, y, z: []
 }
+
 
 def rgb2hex(color):
     r, g, b = color.r, color.g, color.b

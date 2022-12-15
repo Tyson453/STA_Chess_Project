@@ -38,8 +38,17 @@ class Game(QtWidgets.QWidget):
             msg = f"!MOVE('{start}', '{end}', '{move}')"
 
             self.player.client.send(msg)
+        else:
+            startTile = self.board.getTile(start)
+            endTile = self.board.getTile(end)
+
+            self.movePiece(startTile, endTile)
 
         self.nextTurn()
+
+    def movePiece(self, startTile, endTile):
+        endTile.setPiece(startTile.piece)
+        startTile.deletePiece()
 
     def nextTurn(self):
         self.turn += 1
@@ -52,7 +61,6 @@ class Game(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(str)
     def moveReceivedSlot(self, value):
-        print(value)
         prefix, args = self.decodeMessage(value)
 
         self.registerMove(*args, received=True)

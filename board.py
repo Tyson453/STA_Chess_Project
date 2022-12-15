@@ -10,11 +10,12 @@ class Board(QtWidgets.QWidget):
         super().__init__(parent)
         self.setGeometry(0, 0, w, h)
 
+        self.flipped = flipped
         self.tiles = []
 
         letters = 'abcdefgh'
         numbers = '12345678'
-        if flipped:
+        if self.flipped:
             letters = letters[::-1]
             numbers = numbers[::-1]
 
@@ -39,3 +40,14 @@ class Board(QtWidgets.QWidget):
         for row in self.tiles:
             for tile in row:
                 tile.unhighlight()
+
+    def getTile(self, code):
+        x = ord(code[0]) - ord('a')
+        y = int(code[1])-1
+
+        if self.flipped:
+            x = abs(x-7)
+            y = abs(y-7)
+
+        tile = self.tiles[x][y]
+        return tile

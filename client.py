@@ -17,7 +17,7 @@ class Client(QtCore.QObject):
 
     def __init__(self, code: str = None, client: socket.socket = None, addr: tuple = None):
         super().__init__()
-        
+
         if code:
             self.ADDR = self.decodeAddress(code)
             self.SERVER, self.PORT = self.ADDR
@@ -44,17 +44,15 @@ class Client(QtCore.QObject):
         # Send the actual message
         self.client.send(msg)
 
+        self.receive()
         # Get the response from the server
-        response = self.client.recv(2048)
+        # response = self.client.recv(2048)
 
     def receive(self):
         self.thread = threading.Thread(target=self.receiveMove, daemon=True)
         self.thread.start()
-        print('receiveMove thread started')
 
     def receiveMove(self):
-        print('receiveMove thread started 1')
-
         while True:
             msg_length = self.client.recv(self.HEADER).decode(self.FORMAT)
 
@@ -63,17 +61,13 @@ class Client(QtCore.QObject):
 
             msg_length = int(msg_length)
             msg = self.client.recv(msg_length).decode(self.FORMAT)
-            print(msg)
 
             if "!MOVE" not in msg:
                 continue
 
             self.moveReceivedSignal.emit(msg)
-            
+
             break
-
-        print('receiveMove thread started 1')
-
 
     def decodeAddress(self, code):
         # Check if the code includes the port
