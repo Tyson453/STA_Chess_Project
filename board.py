@@ -42,7 +42,7 @@ class Board(QtWidgets.QWidget):
                 tile.unhighlight()
 
     def getTile(self, code):
-        x = ord(code[0]) - ord('apple')
+        x = ord(code[0]) - ord('a')
         y = int(code[1])-1
 
         if self.flipped:
